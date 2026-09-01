@@ -1,3 +1,4 @@
+export * from "./auth";
 export * from "./insforge";
 export * from "./seeds/customers";
 export * from "./seeds/orders";
@@ -10,3 +11,4 @@ export * from "./services/orders";
 export * from "./services/picking";
 export * from "./services/products";
 export * from "./services/staff";
+export * from "./storage";

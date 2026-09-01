@@ -543,32 +543,40 @@ export default function App() {
 	const loadData = async () => {
 		setLoading(true);
 		try {
-			// 1. Fetch Products
-			const prodRes = await fetch("/api/products");
-			const prodJson = await prodRes.json();
+			const endpoints = [
+				{ key: "products", url: "/api/products" },
+				{ key: "customers", url: "/api/customers" },
+				{ key: "orders", url: "/api/orders" },
+				{ key: "picking", url: "/api/picking-tasks" },
+			];
 
-			// 2. Fetch Customers
-			const custRes = await fetch("/api/customers");
-			const custJson = await custRes.json();
+			const results = await Promise.allSettled(
+				endpoints.map(async ({ url }) => {
+					const res = await fetch(url);
+					if (!res.ok) throw new Error(`${res.status}`);
+					const text = await res.text();
+					try {
+						return JSON.parse(text);
+					} catch {
+						throw new Error("Not JSON");
+					}
+				}),
+			);
 
-			// 3. Fetch Orders
-			const orderRes = await fetch("/api/orders");
-			const orderJson = await orderRes.json();
-
-			// 4. Fetch Picking Tasks
-			const pickRes = await fetch("/api/picking-tasks");
-			const pickJson = await pickRes.json();
-
-			setDbState((prev) => ({
-				...prev,
-				products: prodJson.success ? prodJson.data.items : prev.products,
-				customers: custJson.success ? custJson.data.items : prev.customers,
-				orders: orderJson.success ? orderJson.data.items : prev.orders,
-				picking: pickJson.success ? pickJson.data.items : prev.picking,
-			}));
-			setIsBackendConnected(true);
-		} catch (e) {
-			console.warn("Could not connect to SQLite backend. Operating in local fallback mode.", e);
+			let connected = false;
+			setDbState((prev) => {
+				const next = { ...prev };
+				for (let i = 0; i < endpoints.length; i++) {
+					const result = results[i];
+					if (result.status === "fulfilled" && result.value?.success) {
+						(next as any)[endpoints[i].key] = result.value.data.items;
+						connected = true;
+					}
+				}
+				return next;
+			});
+			setIsBackendConnected(connected);
+		} catch {
 			setIsBackendConnected(false);
 		} finally {
 			setLoading(false);
