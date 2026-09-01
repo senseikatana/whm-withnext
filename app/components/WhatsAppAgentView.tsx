@@ -9,31 +9,36 @@ interface WhatsAppAgentViewProps {
 	setDbState: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const callGeminiLocal = async (prompt: string) => {
+const callAILocal = async (prompt: string) => {
 	const apiKey = typeof window !== "undefined" ? localStorage.getItem("ai_api_key") || "" : "";
 	if (!apiKey) {
 		await new Promise((res) => setTimeout(res, 800));
 		return "Hola, sí. Su pedido ya está listo para despacho en el Muelle de Carga C. Puede ingresar con el camión ahora.";
 	}
-	const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+	const url = "https://api.deepseek.com/v1/chat/completions";
 	const payload = {
-		contents: [{ parts: [{ text: prompt }] }],
-		systemInstruction: {
-			parts: [
-				{
-					text: "Eres el asistente y coordinador logístico de WhatsApp de WarehouseFlow.",
-				},
-			],
-		},
+		model: "deepseek-chat",
+		messages: [
+			{
+				role: "system",
+				content: "Eres el asistente y coordinador logístico de WhatsApp de WarehouseFlow.",
+			},
+			{ role: "user", content: prompt },
+		],
+		temperature: 0.7,
+		max_tokens: 1024,
 	};
 	try {
 		const response = await fetch(url, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${apiKey}`,
+			},
 			body: JSON.stringify(payload),
 		});
 		const data = await response.json();
-		return data.candidates?.[0]?.content?.parts?.[0]?.text || "No se pudo redactar la respuesta.";
+		return data.choices?.[0]?.message?.content || "No se pudo redactar la respuesta.";
 	} catch (_err) {
 		return "Error generando respuesta automática.";
 	}
@@ -47,7 +52,7 @@ export default function WhatsAppAgentView({ chats, setDbState }: WhatsAppAgentVi
 	const handleGenerateAIResponse = async () => {
 		if (!activeChat) return;
 		setLoadingResponse(true);
-		const res = await callGeminiLocal(
+		const res = await callAILocal(
 			`Responde de manera formal y directa a este mensaje de logística de WhatsApp: "${activeChat.message}"`,
 		);
 		setReplyText(res);

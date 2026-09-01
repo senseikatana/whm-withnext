@@ -11,10 +11,7 @@ export async function callAI(
 	prompt: string,
 	systemInstruction: string = DEFAULT_SYSTEM_INSTRUCTION,
 ): Promise<string> {
-	const apiKey =
-		typeof window !== "undefined"
-			? localStorage.getItem("ai_api_key") || ""
-			: "";
+	const apiKey = typeof window !== "undefined" ? localStorage.getItem("ai_api_key") || "" : "";
 
 	if (!apiKey) {
 		return getMockResponse(prompt);
@@ -43,9 +40,7 @@ export async function callAI(
 			});
 			if (!response.ok) throw new Error(`API Error: ${response.status}`);
 			const data = await response.json();
-			return (
-				data.choices?.[0]?.message?.content || "Sin respuesta del modelo."
-			);
+			return data.choices?.[0]?.message?.content || "Sin respuesta del modelo.";
 		} catch (err) {
 			if (i === RETRY_DELAYS.length) {
 				console.error("DeepSeek API Error:", err);

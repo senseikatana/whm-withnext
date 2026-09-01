@@ -539,7 +539,7 @@ export default function App() {
 
 	const [loading, setLoading] = useState<boolean>(false);
 
-	// Gemini Modal Configuration — SSR-safe: init with stable defaults,
+	// AI Modal Configuration — SSR-safe: init with stable defaults,
 	// read localStorage only in useEffect after hydration.
 	const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
 	const [tempApiKey, setTempApiKey] = useState("");
@@ -547,9 +547,9 @@ export default function App() {
 
 	const t = translations[lang];
 
-	// Hydrate Gemini API key from localStorage after mount
+	// Hydrate AI API key from localStorage after mount
 	useEffect(() => {
-		const key = getGeminiApiKey();
+		const key = getAIApiKey();
 		setTempApiKey(key);
 		setHasApiKey(!!key);
 	}, []);
@@ -795,9 +795,9 @@ export default function App() {
 		}
 	};
 
-	// Save Gemini API Key
+	// Save AI API Key
 	const handleSaveApiKey = () => {
-		localStorage.setItem("gemini_api_key", tempApiKey);
+		localStorage.setItem("ai_api_key", tempApiKey);
 		setHasApiKey(!!tempApiKey);
 		setIsApiKeyModalOpen(false);
 	};
@@ -855,7 +855,7 @@ export default function App() {
 						</span>
 					</div>
 
-					{/* Gemini AI Key button */}
+					{/* AI Key button */}
 					<button
 						type="button"
 						onClick={() => setIsApiKeyModalOpen(true)}
@@ -866,7 +866,7 @@ export default function App() {
 						}`}
 					>
 						<Bot size={14} className={hasApiKey ? "text-indigo-400" : "text-amber-400"} />
-						<span>{hasApiKey ? "Gemini Activo" : "Conectar IA"}</span>
+						<span>{hasApiKey ? "DeepSeek Activo" : "Conectar IA"}</span>
 					</button>
 
 					{/* View selector toggle */}
@@ -1205,7 +1205,7 @@ export default function App() {
 				)}
 			</div>
 
-			{/* Gemini API Key Modal */}
+			{/* AI API Key Modal */}
 			{isApiKeyModalOpen && (
 				<div className="fixed inset-0 bg-[#050811]/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
 					<div className="bg-[#0b0f19] border border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl">
@@ -1222,12 +1222,12 @@ export default function App() {
 							</button>
 						</div>
 						<p className="text-xs text-slate-400 mb-4">
-							Introduce tu clave API de Gemini. Se guardará de forma local en tu navegador para habilitar
+							Introduce tu clave API de DeepSeek. Se guardará de forma local en tu navegador para habilitar
 							la generación de respuestas reales y autocompletado en el SGA.
 						</p>
 						<input
 							type="password"
-							placeholder="Gemini API Key (AIzaSy...)"
+							placeholder="DeepSeek API Key (sk-...)"
 							value={tempApiKey}
 							onChange={(e) => setTempApiKey(e.target.value)}
 							className="w-full bg-[#050811] border border-slate-800 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-650 outline-none focus:border-indigo-500 mb-4"
@@ -1237,7 +1237,7 @@ export default function App() {
 								type="button"
 								onClick={() => {
 									setTempApiKey("");
-									localStorage.removeItem("gemini_api_key");
+									localStorage.removeItem("ai_api_key");
 									setHasApiKey(false);
 									setIsApiKeyModalOpen(false);
 								}}
