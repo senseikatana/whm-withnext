@@ -2,7 +2,8 @@ name = "whm-withnext-proxy"
 main = "worker.ts"
 compatibility_date = "2024-01-01"
 
-# Routes: interceptar solo /works/whm-withnext/*
+# Routes: interceptar raíz y /works/whm-withnext
 routes = [
+  { pattern = "senseikatana.com/", zone_name = "senseikatana.com" },
   { pattern = "senseikatana.com/works/whm-withnext*", zone_name = "senseikatana.com" }
 ]

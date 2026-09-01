@@ -5,12 +5,31 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
+
 		"lint": "biome lint ./app",
 		"lint:fix": "biome lint --write ./app",
 		"format": "biome format ./app",
 		"format:fix": "biome format --write ./app",
 		"check": "biome check ./app",
 		"check:fix": "biome check --write ./app",
+
+		"worker:dev": "wrangler dev --config ./cloudflare-worker/wrangler.toml",
+		"worker:deploy": "wrangler deploy --config ./cloudflare-worker/wrangler.toml",
+		"worker:tail": "wrangler tail --config ./cloudflare-worker/wrangler.toml",
+		"worker:delete": "wrangler delete --config ./cloudflare-worker/wrangler.toml whm-withnext-proxy",
+
+		"insforge:current": "bunx -y @insforge/cli current",
+		"insforge:db": "bunx -y @insforge/cli db query",
+		"insforge:migrate": "bunx -y @insforge/cli db migrations up --all",
+		"insforge:migrate:new": "bunx -y @insforge/cli db migrations new",
+		"insforge:secrets": "bunx -y @insforge/cli secrets list",
+		"insforge:deploy": "bunx -y @insforge/cli deployments deploy .",
+		"insforge:domains": "bunx -y @insforge/cli domains status senseikatana.com",
+		"insforge:diagnose": "bunx -y @insforge/cli diagnose",
+
+		"deploy": "concurrently --names build,worker --prefixColors blue,green \"bun run build\" \"bun run worker:deploy\"",
+		"deploy:full": "concurrently --names insforge,worker --prefixColors cyan,magenta \"bun run insforge:deploy\" \"bun run worker:deploy\"",
+
 		"postinstall": "next telemetry disable"
 	},
 	"dependencies": {
@@ -27,8 +46,10 @@
 		"@types/react": "^19.2.18",
 		"@types/react-dom": "^19.2.5",
 		"babel-plugin-react-compiler": "1.0.0",
+		"concurrently": "^10.0.5",
 		"tailwindcss": "^4.3.3",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"wrangler": "^4.127.1"
 	},
 	"ignoreScripts": [
 		"sharp",
