@@ -5,6 +5,7 @@ export * from "./seeds/orders";
 export * from "./seeds/picking";
 export * from "./seeds/products";
 export * from "./seeds/staff";
+export * from "./seeds/users";
 export * from "./services/base";
 export * from "./services/customers";
 export * from "./services/orders";
