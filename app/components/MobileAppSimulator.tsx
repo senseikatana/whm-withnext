@@ -1,13 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-	QrCode,
-	ListChecks,
-	Package,
-	LayoutDashboard,
-	Loader2,
-} from "lucide-react";
+import { LayoutDashboard, ListChecks, Loader2, Package, QrCode } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
 
 interface MobileAppSimulatorProps {
 	dbState: any;
@@ -38,31 +33,18 @@ const getStatusColor = (status: string) => {
 		"Packing",
 		"Control de Calidad",
 	];
-	const redStatuses = [
-		"Crítico",
-		"Inactivo",
-		"Mantenimiento",
-		"Cancelado",
-		"Pausada",
-		"warning",
-	];
+	const redStatuses = ["Crítico", "Inactivo", "Mantenimiento", "Cancelado", "Pausada", "warning"];
 
 	if (greenStatuses.includes(status))
 		return "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
 	if (orangeStatuses.includes(status))
 		return "bg-amber-500/20 text-amber-400 border border-amber-500/30";
-	if (redStatuses.includes(status))
-		return "bg-rose-500/20 text-rose-400 border border-rose-500/30";
+	if (redStatuses.includes(status)) return "bg-rose-500/20 text-rose-400 border border-rose-500/30";
 	return "bg-slate-800 text-slate-400 border border-slate-700/50";
 };
 
-export default function MobileAppSimulator({
-	dbState,
-	isConnected,
-}: MobileAppSimulatorProps) {
-	const [tab, setTab] = useState<"home" | "scan" | "picking" | "inventory">(
-		"home",
-	);
+export default function MobileAppSimulator({ dbState, isConnected }: MobileAppSimulatorProps) {
+	const [tab, setTab] = useState<"home" | "scan" | "picking" | "inventory">("home");
 	const [scanInput, setScanInput] = useState("");
 	const [scanResult, setScanResult] = useState<string | null>(null);
 	const [scanning, setScanning] = useState(false);
@@ -93,7 +75,7 @@ export default function MobileAppSimulator({
 					return;
 				}
 			}
-		} catch (err) {
+		} catch (_err) {
 			console.warn("Scan failed, running simulated local scan response.");
 		}
 
@@ -117,30 +99,18 @@ export default function MobileAppSimulator({
 					<div className="space-y-4">
 						<div className="bg-gradient-to-br from-indigo-600 to-indigo-900 rounded-3xl p-5 text-white shadow-xl">
 							<h3 className="text-xl font-black mb-0.5">Hola Carlos</h3>
-							<p className="text-xs text-indigo-200 font-semibold">
-								Turno Mañana · Zona B
-							</p>
+							<p className="text-xs text-indigo-200 font-semibold">Turno Mañana · Zona B</p>
 
 							<div className="grid grid-cols-2 gap-3 mt-5">
 								<div className="bg-white/10 rounded-2xl p-3.5 backdrop-blur-md">
 									<h4 className="text-2xl font-black text-white">
-										{
-											dbState.picking.filter(
-												(t: any) => t.status === "Pendiente",
-											).length
-										}
+										{dbState.picking.filter((t: any) => t.status === "Pendiente").length}
 									</h4>
-									<p className="text-[10px] text-indigo-200 uppercase font-bold mt-1">
-										Pickings Pdtes
-									</p>
+									<p className="text-[10px] text-indigo-200 uppercase font-bold mt-1">Pickings Pdtes</p>
 								</div>
 								<div className="bg-white/10 rounded-2xl p-3.5 backdrop-blur-md">
-									<h4 className="text-2xl font-black text-white">
-										{dbState.products.length}
-									</h4>
-									<p className="text-[10px] text-indigo-200 uppercase font-bold mt-1">
-										SKUs Activos
-									</p>
+									<h4 className="text-2xl font-black text-white">{dbState.products.length}</h4>
+									<p className="text-[10px] text-indigo-200 uppercase font-bold mt-1">SKUs Activos</p>
 								</div>
 							</div>
 						</div>
@@ -167,8 +137,7 @@ export default function MobileAppSimulator({
 				{tab === "scan" && (
 					<div className="space-y-4 p-1">
 						<h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-							<QrCode size={18} className="text-indigo-400" /> Escáner de Código
-							de Barras
+							<QrCode size={18} className="text-indigo-400" /> Escáner de Código de Barras
 						</h3>
 						<form onSubmit={handleManualScanSubmit} className="space-y-3.5">
 							<input
@@ -183,10 +152,7 @@ export default function MobileAppSimulator({
 								disabled={scanning}
 								className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition"
 							>
-								{scanning ? (
-									<Loader2 className="animate-spin" size={14} />
-								) : null}{" "}
-								Registrar Escaneo
+								{scanning ? <Loader2 className="animate-spin" size={14} /> : null} Registrar Escaneo
 							</button>
 						</form>
 
@@ -209,23 +175,17 @@ export default function MobileAppSimulator({
 								className="p-4 bg-[#050811] border border-slate-800 rounded-2xl space-y-2"
 							>
 								<div className="flex justify-between items-center">
-									<span className="font-extrabold text-xs text-slate-200">
-										{item.taskNumber}
-									</span>
+									<span className="font-extrabold text-xs text-slate-200">{item.taskNumber}</span>
 									<span
 										className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${getStatusColor(item.status)}`}
 									>
 										{item.status}
 									</span>
 								</div>
-								<p className="text-[10px] text-slate-400">
-									Orden de salida: {item.orderNumber}
-								</p>
+								<p className="text-[10px] text-slate-400">Orden de salida: {item.orderNumber}</p>
 								<div className="flex justify-between items-center text-xs mt-2 border-t border-slate-900 pt-2 text-slate-350">
 									<span>Cant: {item.totalItems} items</span>
-									<span className="text-[10px] text-indigo-400 font-bold">
-										Zona: {item.zone}
-									</span>
+									<span className="text-[10px] text-indigo-400 font-bold">Zona: {item.zone}</span>
 								</div>
 							</div>
 						))}
@@ -246,10 +206,7 @@ export default function MobileAppSimulator({
 									<div>
 										<p className="text-xs font-bold text-slate-200">{p.name}</p>
 										<p className="text-[10px] text-slate-500">
-											SKU: {p.sku} | Loc:{" "}
-											<span className="text-indigo-400 font-semibold">
-												{p.location}
-											</span>
+											SKU: {p.sku} | Loc: <span className="text-indigo-400 font-semibold">{p.location}</span>
 										</p>
 									</div>
 									<span

@@ -1,38 +1,42 @@
 {
-  "name": "esinsa-sga-nextjs",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "bunx --bun @biomejs/biome lint ./app ",
-    "format": "bunx --bun @biomejs/biome format --write ./app/**/*.{ts,tsx,js,jsx,json,md}",
-    "postinstall": "next telemetry disable"
-  },
-  "dependencies": {
-    "@insforge/sdk": "^1.5.2",
-    "lucide-react": "^1.38.0",
-    "next": "16.2.12",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.2.0",
-    "@tailwindcss/postcss": "^4.3.3",
-    "@types/node": "^20.19.43",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.5",
-    "babel-plugin-react-compiler": "1.0.0",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3"
-  },
-  "ignoreScripts": [
-    "sharp",
-    "unrs-resolver"
-  ],
-  "trustedDependencies": [
-    "sharp",
-    "unrs-resolver"
-  ]
+	"name": "esinsa-sga-nextjs",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "biome lint ./app",
+		"lint:fix": "biome lint --write ./app",
+		"format": "biome format --unsafe ./app",
+		"format:fix": "biome format --write --unsafe ./app",
+		"check": "biome check ./app",
+		"check:fix": "biome check --write ./app",
+		"postinstall": "next telemetry disable"
+	},
+	"dependencies": {
+		"@insforge/sdk": "^1.5.2",
+		"lucide-react": "^1.38.0",
+		"next": "16.2.12",
+		"react": "19.2.4",
+		"react-dom": "19.2.4"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.5.11",
+		"@tailwindcss/postcss": "^4.3.3",
+		"@types/node": "^20.19.43",
+		"@types/react": "^19.2.18",
+		"@types/react-dom": "^19.2.5",
+		"babel-plugin-react-compiler": "1.0.0",
+		"tailwindcss": "^4.3.3",
+		"typescript": "^5.9.3"
+	},
+	"ignoreScripts": [
+		"sharp",
+		"unrs-resolver"
+	],
+	"trustedDependencies": [
+		"sharp",
+		"unrs-resolver"
+	]
 }

@@ -1,0 +1,78 @@
+export interface Order {
+	id: number;
+	order_number: string;
+	customer_name: string;
+	status: string;
+	priority: string;
+	total_items: number;
+	total_value: number;
+	created_at?: string;
+	updated_at?: string;
+}
+
+export const SEED_ORDERS: Omit<Order, "id" | "created_at" | "updated_at">[] = [
+	{
+		order_number: "PED-2026-001",
+		customer_name: "Mercadona S.A.",
+		status: "Pendiente",
+		priority: "high",
+		total_items: 3,
+		total_value: 1850.5,
+	},
+	{
+		order_number: "PED-2026-002",
+		customer_name: "Carrefour España",
+		status: "Picking",
+		priority: "normal",
+		total_items: 5,
+		total_value: 3250.0,
+	},
+	{
+		order_number: "PED-2026-003",
+		customer_name: "El Corte Inglés",
+		status: "Pendiente",
+		priority: "normal",
+		total_items: 2,
+		total_value: 890.0,
+	},
+	{
+		order_number: "PED-2026-004",
+		customer_name: "Mercadona S.A.",
+		status: "Packing",
+		priority: "high",
+		total_items: 4,
+		total_value: 2100.0,
+	},
+	{
+		order_number: "PED-2026-005",
+		customer_name: "Carrefour España",
+		status: "Despachado",
+		priority: "normal",
+		total_items: 6,
+		total_value: 4500.0,
+	},
+	{
+		order_number: "PED-2026-006",
+		customer_name: "El Corte Inglés",
+		status: "Pendiente",
+		priority: "high",
+		total_items: 8,
+		total_value: 6750.0,
+	},
+	{
+		order_number: "REC-2026-001",
+		customer_name: "Distribuciones García SL",
+		status: "Pendiente",
+		priority: "normal",
+		total_items: 12,
+		total_value: 1450.0,
+	},
+	{
+		order_number: "REC-2026-002",
+		customer_name: "Logística Martínez",
+		status: "Completado",
+		priority: "normal",
+		total_items: 24,
+		total_value: 3800.0,
+	},
+];

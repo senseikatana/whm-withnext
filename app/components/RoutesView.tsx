@@ -1,7 +1,7 @@
 "use client";
 
+import { Bot, Loader2, Route as RouteIcon, Sparkles } from "lucide-react";
 import { useState } from "react";
-import { Route as RouteIcon, Bot, Sparkles, Loader2 } from "lucide-react";
 
 // local call helper
 const callGeminiLocal = async (prompt: string) => {
@@ -28,11 +28,8 @@ const callGeminiLocal = async (prompt: string) => {
 			body: JSON.stringify(payload),
 		});
 		const data = await response.json();
-		return (
-			data.candidates?.[0]?.content?.parts?.[0]?.text ||
-			"No se pudo obtener la sugerencia."
-		);
-	} catch (err) {
+		return data.candidates?.[0]?.content?.parts?.[0]?.text || "No se pudo obtener la sugerencia.";
+	} catch (_err) {
 		return "Error al comunicar con la IA.";
 	}
 };
@@ -55,12 +52,10 @@ export default function RoutesView() {
 			<div className="flex justify-between items-center">
 				<div>
 					<h2 className="text-lg font-black text-white flex items-center gap-2">
-						<RouteIcon className="text-indigo-400" /> Planificador de Rutas de
-						Almacén
+						<RouteIcon className="text-indigo-400" /> Planificador de Rutas de Almacén
 					</h2>
 					<p className="text-xs text-slate-400">
-						Cálculo inteligente de rutas internas para minimizar distancias de
-						picking
+						Cálculo inteligente de rutas internas para minimizar distancias de picking
 					</p>
 				</div>
 				<button
@@ -69,12 +64,8 @@ export default function RoutesView() {
 					className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition disabled:opacity-50"
 					type="button"
 				>
-					{loadingRoute ? (
-						<Loader2 className="animate-spin" size={14} />
-					) : (
-						<Bot size={14} />
-					)}{" "}
-					Optimizar con IA
+					{loadingRoute ? <Loader2 className="animate-spin" size={14} /> : <Bot size={14} />} Optimizar
+					con IA
 				</button>
 			</div>
 
@@ -90,24 +81,19 @@ export default function RoutesView() {
 						</div>
 
 						{/* Zones Grid */}
-						{[
-							"Zona Recepción (A)",
-							"Zona Estanterías (B)",
-							"Zona Frío (D)",
-							"Zona Despacho (C)",
-						].map((zone, idx) => (
-							<div
-								key={idx}
-								className="border border-slate-800 bg-[#0b0f19]/60 rounded-xl p-3 flex flex-col justify-between items-center text-center"
-							>
-								<span className="text-[10px] font-bold text-slate-400">
-									{zone}
-								</span>
-								<div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-xs text-indigo-400 border border-slate-700">
-									{["A", "B", "D", "C"][idx]}
+						{["Zona Recepción (A)", "Zona Estanterías (B)", "Zona Frío (D)", "Zona Despacho (C)"].map(
+							(zone, idx) => (
+								<div
+									key={idx}
+									className="border border-slate-800 bg-[#0b0f19]/60 rounded-xl p-3 flex flex-col justify-between items-center text-center"
+								>
+									<span className="text-[10px] font-bold text-slate-400">{zone}</span>
+									<div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold text-xs text-indigo-400 border border-slate-700">
+										{["A", "B", "D", "C"][idx]}
+									</div>
 								</div>
-							</div>
-						))}
+							),
+						)}
 					</div>
 				</div>
 
@@ -123,8 +109,8 @@ export default function RoutesView() {
 							</p>
 						) : (
 							<p className="text-slate-500 italic">
-								Haz clic en "Optimizar con IA" para recibir instrucciones
-								optimizadas basadas en la carga de trabajo actual.
+								Haz clic en "Optimizar con IA" para recibir instrucciones optimizadas basadas en la carga de
+								trabajo actual.
 							</p>
 						)}
 					</div>

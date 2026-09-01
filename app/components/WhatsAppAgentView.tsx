@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { Bot, Send, Loader2 } from "lucide-react";
+import { Bot, Loader2, Send } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
 
 interface WhatsAppAgentViewProps {
 	chats: any[];
@@ -32,19 +33,13 @@ const callGeminiLocal = async (prompt: string) => {
 			body: JSON.stringify(payload),
 		});
 		const data = await response.json();
-		return (
-			data.candidates?.[0]?.content?.parts?.[0]?.text ||
-			"No se pudo redactar la respuesta."
-		);
-	} catch (err) {
+		return data.candidates?.[0]?.content?.parts?.[0]?.text || "No se pudo redactar la respuesta.";
+	} catch (_err) {
 		return "Error generando respuesta automática.";
 	}
 };
 
-export default function WhatsAppAgentView({
-	chats,
-	setDbState,
-}: WhatsAppAgentViewProps) {
+export default function WhatsAppAgentView({ chats, setDbState }: WhatsAppAgentViewProps) {
 	const [activeChat, setActiveChat] = useState<any>(chats[0] || null);
 	const [replyText, setReplyText] = useState("");
 	const [loadingResponse, setLoadingResponse] = useState(false);
@@ -75,13 +70,16 @@ export default function WhatsAppAgentView({
 		<div className="bg-[#050811] border border-slate-800 p-6 rounded-2xl flex flex-col lg:flex-row gap-6">
 			{/* Contact List */}
 			<div className="w-full lg:w-80 space-y-3 shrink-0">
-				<h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-					Chats Activos
-				</h3>
+				<h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Chats Activos</h3>
 				{chats.map((chat: any) => (
 					<div
 						key={chat.id}
 						onClick={() => setActiveChat(chat)}
+						onKeyDown={(e) => {
+							if (e.key === "Enter" || e.key === " ") setActiveChat(chat);
+						}}
+						role="button"
+						tabIndex={0}
 						className={`p-3.5 rounded-xl border cursor-pointer transition ${
 							activeChat?.id === chat.id
 								? "bg-indigo-950/40 border-indigo-700/60"
@@ -90,13 +88,9 @@ export default function WhatsAppAgentView({
 					>
 						<div className="flex justify-between items-center mb-1">
 							<p className="font-bold text-xs text-white">{chat.sender}</p>
-							<span className="text-[10px] text-slate-500 font-bold">
-								{chat.time}
-							</span>
+							<span className="text-[10px] text-slate-500 font-bold">{chat.time}</span>
 						</div>
-						<p className="text-[11px] text-slate-400 truncate font-medium">
-							{chat.message}
-						</p>
+						<p className="text-[11px] text-slate-400 truncate font-medium">{chat.message}</p>
 					</div>
 				))}
 			</div>
@@ -108,9 +102,7 @@ export default function WhatsAppAgentView({
 						{/* Header */}
 						<div className="border-b border-slate-800 pb-3 mb-4 flex justify-between items-center">
 							<div>
-								<p className="font-bold text-sm text-slate-200">
-									{activeChat.sender}
-								</p>
+								<p className="font-bold text-sm text-slate-200">{activeChat.sender}</p>
 								<p className="text-[10px] text-emerald-550 font-bold flex items-center gap-1">
 									<span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
 									Chofer en Ruta
@@ -150,12 +142,8 @@ export default function WhatsAppAgentView({
 									className="px-3.5 py-2 border border-slate-800 hover:bg-slate-800 text-slate-355 rounded-lg text-xs font-bold flex items-center gap-1 transition"
 									type="button"
 								>
-									{loadingResponse ? (
-										<Loader2 className="animate-spin" size={12} />
-									) : (
-										<Bot size={12} />
-									)}{" "}
-									IA Redactar
+									{loadingResponse ? <Loader2 className="animate-spin" size={12} /> : <Bot size={12} />} IA
+									Redactar
 								</button>
 								<button
 									onClick={handleSendReply}

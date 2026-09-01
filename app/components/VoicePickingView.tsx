@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Mic, Play, CheckSquare, Square, RadioReceiver } from "lucide-react";
+import { CheckSquare, Mic, Play, RadioReceiver, Square } from "lucide-react";
+import { useMemo, useState } from "react";
 
 interface VoicePickingViewProps {
 	pickingTasks: any[];
 	products: any[];
 }
 
-export default function VoicePickingView({
-	pickingTasks,
-}: VoicePickingViewProps) {
+export default function VoicePickingView({ pickingTasks }: VoicePickingViewProps) {
 	const [activeTask, setActiveTask] = useState<any>(null);
 	const [commandLog, setCommandLog] = useState<string[]>([]);
 	const [pickedItemsLocal, setPickedItemsLocal] = useState<any[]>([]);
@@ -82,13 +80,8 @@ export default function VoicePickingView({
 				const allDone = updatedItems.every((i) => i.picked);
 
 				if (allDone) {
-					speakText(
-						"Tarea completada. Entrega los productos en el muelle de despacho.",
-					);
-					setCommandLog((prev) => [
-						...prev,
-						"Sistema: Tarea de picking completada con éxito.",
-					]);
+					speakText("Tarea completada. Entrega los productos en el muelle de despacho.");
+					setCommandLog((prev) => [...prev, "Sistema: Tarea de picking completada con éxito."]);
 				} else {
 					const nextItem = updatedItems.find((item) => !item.picked);
 					if (nextItem) {
@@ -136,15 +129,9 @@ export default function VoicePickingView({
 							className="p-4 bg-[#0b0f19] border border-slate-800 rounded-xl flex justify-between items-center"
 						>
 							<div>
-								<p className="font-bold text-sm text-slate-200">
-									{task.taskNumber}
-								</p>
-								<p className="text-xs text-slate-400">
-									Orden: {task.orderNumber}
-								</p>
-								<p className="text-[10px] text-slate-500 mt-1">
-									Método: Zone picking ({task.zone})
-								</p>
+								<p className="font-bold text-sm text-slate-200">{task.taskNumber}</p>
+								<p className="text-xs text-slate-400">Orden: {task.orderNumber}</p>
+								<p className="text-[10px] text-slate-500 mt-1">Método: Zone picking ({task.zone})</p>
 							</div>
 							<button
 								onClick={() => handleStartPicking(task)}
@@ -163,12 +150,8 @@ export default function VoicePickingView({
 						<div className="bg-[#0b0f19] border border-slate-800 p-5 rounded-2xl">
 							<div className="flex justify-between items-start border-b border-slate-800 pb-3 mb-4">
 								<div>
-									<h4 className="font-extrabold text-sm text-white">
-										Ejecutando {activeTask.taskNumber}
-									</h4>
-									<p className="text-xs text-indigo-400">
-										Operario: Carlos Ruiz
-									</p>
+									<h4 className="font-extrabold text-sm text-white">Ejecutando {activeTask.taskNumber}</h4>
+									<p className="text-xs text-indigo-400">Operario: Carlos Ruiz</p>
 								</div>
 								<span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-950/40 text-amber-400 border border-amber-800/40">
 									En Proceso
@@ -193,16 +176,9 @@ export default function VoicePickingView({
 												<Square size={18} />
 											)}
 											<div>
-												<p
-													className={`font-bold text-xs ${item.picked ? "line-through" : ""}`}
-												>
-													{item.name}
-												</p>
+												<p className={`font-bold text-xs ${item.picked ? "line-through" : ""}`}>{item.name}</p>
 												<p className="text-[10px] text-slate-500">
-													Ubicación:{" "}
-													<span className="text-indigo-400 font-bold">
-														{item.location}
-													</span>
+													Ubicación: <span className="text-indigo-400 font-bold">{item.location}</span>
 												</p>
 											</div>
 										</div>
@@ -217,8 +193,7 @@ export default function VoicePickingView({
 							<div className="bg-[#050811] border border-slate-800 p-4 rounded-xl">
 								<div className="flex items-center justify-between mb-3 text-xs">
 									<span className="font-bold text-slate-400 flex items-center gap-1.5">
-										<RadioReceiver size={14} className="text-indigo-400" />{" "}
-										Micrófono / Reconocimiento de Voz
+										<RadioReceiver size={14} className="text-indigo-400" /> Micrófono / Reconocimiento de Voz
 									</span>
 									<span className="text-[10px] text-slate-500 font-semibold">
 										Decir "Confirmar" al recoger
@@ -236,9 +211,7 @@ export default function VoicePickingView({
 									<button
 										type="button"
 										onClick={() =>
-											speakText(
-												"Repitiendo ubicación del artículo actual. Pasillo A-02 rack 3.",
-											)
+											speakText("Repitiendo ubicación del artículo actual. Pasillo A-02 rack 3.")
 										}
 										className="px-4 bg-[#0b0f19] border border-slate-800 rounded-xl text-slate-350 text-xs font-semibold hover:bg-slate-800 transition"
 									>
@@ -254,11 +227,7 @@ export default function VoicePickingView({
 										{commandLog.map((log, idx) => (
 											<p
 												key={idx}
-												className={
-													log.startsWith("Sistema")
-														? "text-indigo-400"
-														: "text-emerald-400"
-												}
+												className={log.startsWith("Sistema") ? "text-indigo-400" : "text-emerald-400"}
 											>
 												{log}
 											</p>
@@ -271,8 +240,7 @@ export default function VoicePickingView({
 						<div className="bg-[#0b0f19]/30 border border-dashed border-slate-800 p-12 text-center rounded-2xl flex flex-col items-center justify-center">
 							<Mic size={32} className="text-slate-650 mb-2" />
 							<p className="text-xs text-slate-500 font-semibold">
-								Selecciona una tarea de picking y haz clic en "Iniciar" para
-								comenzar la guía por voz.
+								Selecciona una tarea de picking y haz clic en "Iniciar" para comenzar la guía por voz.
 							</p>
 						</div>
 					)}

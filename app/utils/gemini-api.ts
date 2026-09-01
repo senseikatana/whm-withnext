@@ -11,10 +11,7 @@ export async function callGeminiAPI(
 	prompt: string,
 	systemInstruction: string = DEFAULT_SYSTEM_INSTRUCTION,
 ): Promise<string> {
-	const apiKey =
-		typeof window !== "undefined"
-			? localStorage.getItem("gemini_api_key") || ""
-			: "";
+	const apiKey = typeof window !== "undefined" ? localStorage.getItem("gemini_api_key") || "" : "";
 
 	if (!apiKey) {
 		return getMockResponse(prompt);
@@ -35,10 +32,7 @@ export async function callGeminiAPI(
 			});
 			if (!response.ok) throw new Error(`API Error: ${response.status}`);
 			const data = await response.json();
-			return (
-				data.candidates?.[0]?.content?.parts?.[0]?.text ||
-				"Sin respuesta del modelo."
-			);
+			return data.candidates?.[0]?.content?.parts?.[0]?.text || "Sin respuesta del modelo.";
 		} catch (err) {
 			if (i === RETRY_DELAYS.length) {
 				console.error("Gemini API Error:", err);

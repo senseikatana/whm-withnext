@@ -1,17 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { Cpu, Loader2, ArrowLeftRight, CheckCircle2 } from "lucide-react";
+import { ArrowLeftRight, CheckCircle2, Cpu, Loader2 } from "lucide-react";
+import type React from "react";
+import { useState } from "react";
 
 interface SapIntegrationViewProps {
 	logs: any[];
 	setDbState: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export default function SapIntegrationView({
-	logs,
-	setDbState,
-}: SapIntegrationViewProps) {
+export default function SapIntegrationView({ logs, setDbState }: SapIntegrationViewProps) {
 	const [syncing, setSyncing] = useState(false);
 
 	const handleSyncSap = () => {
@@ -41,8 +39,7 @@ export default function SapIntegrationView({
 						<Cpu className="text-indigo-400" /> SAP ERP Hub Integration
 					</h2>
 					<p className="text-xs text-slate-400">
-						Integración de stock en tiempo real y transacciones directas con SAP
-						RFC
+						Integración de stock en tiempo real y transacciones directas con SAP RFC
 					</p>
 				</div>
 				<button
@@ -51,11 +48,7 @@ export default function SapIntegrationView({
 					className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition disabled:opacity-50"
 					type="button"
 				>
-					{syncing ? (
-						<Loader2 className="animate-spin" size={14} />
-					) : (
-						<ArrowLeftRight size={14} />
-					)}{" "}
+					{syncing ? <Loader2 className="animate-spin" size={14} /> : <ArrowLeftRight size={14} />}{" "}
 					Sincronizar Ahora
 				</button>
 			</div>
@@ -67,16 +60,10 @@ export default function SapIntegrationView({
 						<CheckCircle2 size={32} />
 					</div>
 					<div>
-						<h4 className="font-extrabold text-sm text-white">
-							SAP Endpoint Status
-						</h4>
-						<p className="text-xs text-emerald-500 font-bold mt-0.5">
-							Conectado y Listo
-						</p>
+						<h4 className="font-extrabold text-sm text-white">SAP Endpoint Status</h4>
+						<p className="text-xs text-emerald-500 font-bold mt-0.5">Conectado y Listo</p>
 					</div>
-					<p className="text-[10px] text-slate-400">
-						Último Ping: hace 1 minuto
-					</p>
+					<p className="text-[10px] text-slate-400">Último Ping: hace 1 minuto</p>
 				</div>
 
 				{/* Sync Logs */}
@@ -98,9 +85,7 @@ export default function SapIntegrationView({
 										{log.type}
 									</span>
 								</div>
-								<span className="text-[10px] text-slate-500 font-bold">
-									{log.timestamp}
-								</span>
+								<span className="text-[10px] text-slate-500 font-bold">{log.timestamp}</span>
 							</div>
 						))}
 					</div>

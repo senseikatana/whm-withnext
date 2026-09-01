@@ -1,5 +1,5 @@
-import React from "react";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import type React from "react";
 
 interface KpiCardProps {
 	title: string;
@@ -38,12 +38,8 @@ export default function KpiCard({
 				)}
 			</div>
 			<div className="mt-4">
-				<p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-					{title}
-				</p>
-				<h3 className="text-2xl font-black mt-1 tracking-tight text-white">
-					{value}
-				</h3>
+				<p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{title}</p>
+				<h3 className="text-2xl font-black mt-1 tracking-tight text-white">{value}</h3>
 				<p className="text-xs text-slate-400 mt-1">{subtitle}</p>
 			</div>
 		</div>

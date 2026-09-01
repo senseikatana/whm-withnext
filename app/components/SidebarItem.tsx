@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 interface SidebarItemProps {
 	icon: React.ComponentType<any>;
@@ -31,9 +31,7 @@ export default function SidebarItem({
 			{badge !== undefined && (
 				<span
 					className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-						active
-							? "bg-indigo-500 text-white"
-							: "bg-slate-800 text-slate-400 border border-slate-700/50"
+						active ? "bg-indigo-500 text-white" : "bg-slate-800 text-slate-400 border border-slate-700/50"
 					}`}
 				>
 					{badge}
