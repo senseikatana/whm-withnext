@@ -688,6 +688,19 @@ export default function App() {
     setLoading(false);
   };
 
+  // Handle Batch Deletes
+  const handleBatchDelete = async (entity: string, ids: number[]) => {
+    setLoading(true);
+    setDbState((prev) => {
+      const targetList = (prev as any)[entity];
+      return {
+        ...prev,
+        [entity]: targetList.filter((item: any) => !ids.includes(item.id)),
+      };
+    });
+    setLoading(false);
+  };
+
   // AI Lote mock generator
   const handleInjectMock = async (entity: string) => {
     setLoading(true);
@@ -1038,6 +1051,7 @@ export default function App() {
                   ]}
                   onSave={(d: any, id: any) => handleSave("products", d, id)}
                   onDelete={(id: any) => handleDelete("products", id)}
+                  onBatchDelete={(ids: number[]) => handleBatchDelete("products", ids)}
                   onInject={() => handleInjectMock("products")}
                   t={t}
                 />
@@ -1073,6 +1087,7 @@ export default function App() {
                   ]}
                   onSave={(d: any, id: any) => handleSave("orders", d, id)}
                   onDelete={(id: any) => handleDelete("orders", id)}
+                  onBatchDelete={(ids: number[]) => handleBatchDelete("orders", ids)}
                   onInject={() => handleInjectMock("orders")}
                   t={t}
                 />
@@ -1110,6 +1125,7 @@ export default function App() {
                   ]}
                   onSave={(d: any, id: any) => handleSave("orders", d, id)}
                   onDelete={(id: any) => handleDelete("orders", id)}
+                  onBatchDelete={(ids: number[]) => handleBatchDelete("orders", ids)}
                   onInject={() => handleInjectMock("orders")}
                   t={t}
                 />
@@ -1150,6 +1166,7 @@ export default function App() {
                   ]}
                   onSave={(d: any, id: any) => handleSave("staff", d, id)}
                   onDelete={(id: any) => handleDelete("staff", id)}
+                  onBatchDelete={(ids: number[]) => handleBatchDelete("staff", ids)}
                   onInject={() => handleInjectMock("staff")}
                   t={t}
                 />
