@@ -1,6 +1,6 @@
 {
-	"name": "esinsa-sga-nextjs",
-	"version": "0.0.2",
+	"name": "whm-esinsa-withnext",
+	"version": "0.2.0",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
