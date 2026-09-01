@@ -10,7 +10,7 @@ interface WhatsAppAgentViewProps {
 }
 
 const callGeminiLocal = async (prompt: string) => {
-	const apiKey = localStorage.getItem("gemini_api_key") || "";
+	const apiKey = typeof window !== "undefined" ? localStorage.getItem("gemini_api_key") || "" : "";
 	if (!apiKey) {
 		await new Promise((res) => setTimeout(res, 800));
 		return "Hola, sí. Su pedido ya está listo para despacho en el Muelle de Carga C. Puede ingresar con el camión ahora.";

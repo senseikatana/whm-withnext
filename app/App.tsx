@@ -524,12 +524,20 @@ export default function App() {
 
 	const [loading, setLoading] = useState<boolean>(false);
 
-	// Gemini Modal Configuration
+	// Gemini Modal Configuration — SSR-safe: init with stable defaults,
+	// read localStorage only in useEffect after hydration.
 	const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
-	const [tempApiKey, setTempApiKey] = useState(getGeminiApiKey());
-	const [hasApiKey, setHasApiKey] = useState(!!getGeminiApiKey());
+	const [tempApiKey, setTempApiKey] = useState("");
+	const [hasApiKey, setHasApiKey] = useState(false);
 
 	const t = translations[lang];
+
+	// Hydrate Gemini API key from localStorage after mount
+	useEffect(() => {
+		const key = getGeminiApiKey();
+		setTempApiKey(key);
+		setHasApiKey(!!key);
+	}, []);
 
 	// API fetches with fallback logic
 	const loadData = async () => {
