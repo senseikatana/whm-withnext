@@ -1,3 +1,4 @@
+import { withBasePath } from "./base-path";
 import { api } from "../services/api-manager";
 
 /**
@@ -10,29 +11,29 @@ export function initWarehouseApi(baseUrl: string) {
 			baseUrl,
 			endpoints: {
 				// Products
-				products: { path: "/api/products", defaultParams: { limit: 50 } },
-				product: { path: "/api/products/:slug" },
+				products: { path: withBasePath("/api/products"), defaultParams: { limit: 50 } },
+				product: { path: withBasePath("/api/products/:slug") },
 
 				// Customers
-				customers: { path: "/api/customers", defaultParams: { limit: 50 } },
-				customer: { path: "/api/customers/:slug" },
+				customers: { path: withBasePath("/api/customers"), defaultParams: { limit: 50 } },
+				customer: { path: withBasePath("/api/customers/:slug") },
 
 				// Orders
-				orders: { path: "/api/orders", defaultParams: { limit: 50 } },
-				order: { path: "/api/orders/:slug" },
-				inboundOrders: { path: "/api/orders", defaultParams: { type: "inbound" } },
-				outboundOrders: { path: "/api/orders", defaultParams: { type: "outbound" } },
+				orders: { path: withBasePath("/api/orders"), defaultParams: { limit: 50 } },
+				order: { path: withBasePath("/api/orders/:slug") },
+				inboundOrders: { path: withBasePath("/api/orders"), defaultParams: { type: "inbound" } },
+				outboundOrders: { path: withBasePath("/api/orders"), defaultParams: { type: "outbound" } },
 
 				// Picking
-				pickingTasks: { path: "/api/picking-tasks", defaultParams: { limit: 50 } },
-				pickingTask: { path: "/api/picking-tasks/:slug" },
+				pickingTasks: { path: withBasePath("/api/picking-tasks"), defaultParams: { limit: 50 } },
+				pickingTask: { path: withBasePath("/api/picking-tasks/:slug") },
 
 				// Staff
-				staff: { path: "/api/staff", defaultParams: { limit: 50 } },
-				staffMember: { path: "/api/staff/:slug" },
+				staff: { path: withBasePath("/api/staff"), defaultParams: { limit: 50 } },
+				staffMember: { path: withBasePath("/api/staff/:slug") },
 
 				// GraphQL
-				graphql: { path: "/api/graphql" },
+				graphql: { path: withBasePath("/api/graphql") },
 			},
 		},
 	});
