@@ -1,10 +1,8 @@
 export default class ErrorsService extends Error {
 	private static instance: ErrorsService;
-	private status: number;
 
-	constructor(message: string, status = 500) {
+	constructor(message: string, __status = 500) {
 		super(message);
-		this.status = status;
 		this.name = "ErrorsService";
 	}
 

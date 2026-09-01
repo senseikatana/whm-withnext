@@ -120,8 +120,7 @@ export const productsApi = {
 	update: (slug: string, input: Partial<Product>) =>
 		api.put<ItemResponse<Product>>("warehouse", "product", input, { params: { slug } }),
 
-	delete: (slug: string) =>
-		api.delete("warehouse", "product", { params: { slug } }),
+	delete: (slug: string) => api.delete("warehouse", "product", { params: { slug } }),
 };
 
 // ==================== Customers ====================
@@ -139,8 +138,7 @@ export const customersApi = {
 	update: (slug: string, input: Partial<Customer>) =>
 		api.put<ItemResponse<Customer>>("warehouse", "customer", input, { params: { slug } }),
 
-	delete: (slug: string) =>
-		api.delete("warehouse", "customer", { params: { slug } }),
+	delete: (slug: string) => api.delete("warehouse", "customer", { params: { slug } }),
 };
 
 // ==================== Orders ====================
@@ -149,8 +147,7 @@ export const ordersApi = {
 	list: (query?: Record<string, string | number>) =>
 		api.get<ListResponse<Order>>("warehouse", "orders", { query }),
 
-	get: (slug: string) =>
-		api.get<ItemResponse<Order>>("warehouse", "order", { params: { slug } }),
+	get: (slug: string) => api.get<ItemResponse<Order>>("warehouse", "order", { params: { slug } }),
 
 	inbound: (query?: Record<string, string | number>) =>
 		api.get<ListResponse<Order>>("warehouse", "inboundOrders", { query }),
@@ -158,14 +155,12 @@ export const ordersApi = {
 	outbound: (query?: Record<string, string | number>) =>
 		api.get<ListResponse<Order>>("warehouse", "outboundOrders", { query }),
 
-	create: (input: Partial<Order>) =>
-		api.post<ItemResponse<Order>>("warehouse", "orders", input),
+	create: (input: Partial<Order>) => api.post<ItemResponse<Order>>("warehouse", "orders", input),
 
 	update: (slug: string, input: Partial<Order>) =>
 		api.put<ItemResponse<Order>>("warehouse", "order", input, { params: { slug } }),
 
-	delete: (slug: string) =>
-		api.delete("warehouse", "order", { params: { slug } }),
+	delete: (slug: string) => api.delete("warehouse", "order", { params: { slug } }),
 };
 
 // ==================== Picking ====================
@@ -183,8 +178,7 @@ export const pickingApi = {
 	update: (slug: string, input: Partial<PickingTask>) =>
 		api.put<ItemResponse<PickingTask>>("warehouse", "pickingTask", input, { params: { slug } }),
 
-	delete: (slug: string) =>
-		api.delete("warehouse", "pickingTask", { params: { slug } }),
+	delete: (slug: string) => api.delete("warehouse", "pickingTask", { params: { slug } }),
 };
 
 // ==================== Staff ====================
@@ -196,12 +190,10 @@ export const staffApi = {
 	get: (slug: string) =>
 		api.get<ItemResponse<Staff>>("warehouse", "staffMember", { params: { slug } }),
 
-	create: (input: Partial<Staff>) =>
-		api.post<ItemResponse<Staff>>("warehouse", "staff", input),
+	create: (input: Partial<Staff>) => api.post<ItemResponse<Staff>>("warehouse", "staff", input),
 
 	update: (slug: string, input: Partial<Staff>) =>
 		api.put<ItemResponse<Staff>>("warehouse", "staffMember", input, { params: { slug } }),
 
-	delete: (slug: string) =>
-		api.delete("warehouse", "staffMember", { params: { slug } }),
+	delete: (slug: string) => api.delete("warehouse", "staffMember", { params: { slug } }),
 };

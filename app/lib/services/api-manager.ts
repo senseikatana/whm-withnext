@@ -1,12 +1,3 @@
-import { ApiError } from "./api-error";
-
-// ==================== Types ====================
-
-export interface ApiEndpoint {
-	path: string;
-	defaultParams?: Record<string, string | number>;
-}
-
 export interface ApiConfig {
 	baseUrl: string;
 	endpoints: Record<string, ApiEndpoint>;
@@ -146,23 +137,46 @@ export class ApiManager {
 
 	// ==================== HTTP Shortcuts ====================
 
-	async get<T>(apiName: string, endpointName: string, opts?: RequestOptions): Promise<ApiResponse<T>> {
+	async get<T>(
+		apiName: string,
+		endpointName: string,
+		opts?: RequestOptions,
+	): Promise<ApiResponse<T>> {
 		return this.request<T>(apiName, endpointName, "GET", opts);
 	}
 
-	async post<T>(apiName: string, endpointName: string, body: unknown, opts?: RequestOptions): Promise<ApiResponse<T>> {
+	async post<T>(
+		apiName: string,
+		endpointName: string,
+		body: unknown,
+		opts?: RequestOptions,
+	): Promise<ApiResponse<T>> {
 		return this.request<T>(apiName, endpointName, "POST", { ...opts, body });
 	}
 
-	async put<T>(apiName: string, endpointName: string, body: unknown, opts?: RequestOptions): Promise<ApiResponse<T>> {
+	async put<T>(
+		apiName: string,
+		endpointName: string,
+		body: unknown,
+		opts?: RequestOptions,
+	): Promise<ApiResponse<T>> {
 		return this.request<T>(apiName, endpointName, "PUT", { ...opts, body });
 	}
 
-	async patch<T>(apiName: string, endpointName: string, body: unknown, opts?: RequestOptions): Promise<ApiResponse<T>> {
+	async patch<T>(
+		apiName: string,
+		endpointName: string,
+		body: unknown,
+		opts?: RequestOptions,
+	): Promise<ApiResponse<T>> {
 		return this.request<T>(apiName, endpointName, "PATCH", { ...opts, body });
 	}
 
-	async delete<T>(apiName: string, endpointName: string, opts?: RequestOptions): Promise<ApiResponse<T>> {
+	async delete<T>(
+		apiName: string,
+		endpointName: string,
+		opts?: RequestOptions,
+	): Promise<ApiResponse<T>> {
 		return this.request<T>(apiName, endpointName, "DELETE", opts);
 	}
 }
