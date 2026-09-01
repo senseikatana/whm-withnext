@@ -1,39 +1,33 @@
-export default class ErrorsService extends Error {
-	private static instance: ErrorsService;
+export default class ApiError extends Error {
+	status: number;
 
-	constructor(message: string, __status = 500) {
+	constructor(message: string, status = 500) {
 		super(message);
-		this.name = "ErrorsService";
+		this.name = "ApiError";
+		this.status = status;
 	}
 
-	public static getInstance(): ErrorsService {
-		if (ErrorsService) {
-			ErrorsService.instance = new ErrorsService("Error de API", 500);
-		}
-		return ErrorsService.instance;
+	static notFound(message: string) {
+		return new ApiError(message, 404);
 	}
 
-	notFound(message: string) {
-		return new ErrorsService(message, 404);
+	static badRequest(message: string) {
+		return new ApiError(message, 400);
 	}
 
-	badRequest(message: string) {
-		return new ErrorsService(message, 400);
+	static unauthorized(message = "No autorizado") {
+		return new ApiError(message, 401);
 	}
 
-	unauthorized(message = "No autorizado") {
-		return new ErrorsService(message, 401);
+	static forbidden(message = "Sin permisos") {
+		return new ApiError(message, 403);
 	}
 
-	forbidden(message = "Sin permisos") {
-		return new ErrorsService(message, 403);
+	static internal(message: string) {
+		return new ApiError(message, 500);
 	}
 
-	internal(message: string) {
-		return new ErrorsService(message, 500);
-	}
-
-	custom(message: string, status: number) {
-		return new ErrorsService(message, status);
+	static custom(message: string, status: number) {
+		return new ApiError(message, status);
 	}
 }

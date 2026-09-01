@@ -34,7 +34,7 @@ export { SEED_STAFF } from "./seeds/staff";
 export type { UserProfile, UserRole } from "./seeds/users";
 export { ROLE_DESCRIPTIONS, ROLE_PERMISSIONS, SEED_USER_PROFILES } from "./seeds/users";
 // Services
-export { ApiError } from "./services/api-error";
+export { default as ApiError } from "./services/api-error";
 
 export type { ApiConfig, ApiResponse, RequestOptions } from "./services/api-manager";
 export { ApiManager, api } from "./services/api-manager";

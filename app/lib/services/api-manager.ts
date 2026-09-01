@@ -1,3 +1,10 @@
+import ApiError from "./api-error";
+
+export interface ApiEndpoint {
+	path: string;
+	defaultParams?: Record<string, string | number>;
+}
+
 export interface ApiConfig {
 	baseUrl: string;
 	endpoints: Record<string, ApiEndpoint>;

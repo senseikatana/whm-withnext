@@ -5,20 +5,7 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adherido a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.4.0] — Planificado
-
-### Por implementar
-
-[x] Realtime con suscripciones de InsForge
-[x] PWA (Progressive Web App) instalable
-[x] Dashboard con gráficos reales (Recharts)
-[x] Sistema de roles y permisos en UI
-[x] Tests unitarios (Vitest) y E2E (Playwright)
-[x] Auditoría de acciones
-
-Ver [RELEASES/v0.4.0.md](./RELEASES/v0.4.0.md) para el plan detallado.
-
-## [0.3.0] — 2026-09-01
+## [0.4.0] — 2026-09-01
 
 ### Añadido
 
@@ -107,6 +94,7 @@ Ver [RELEASES/v0.4.0.md](./RELEASES/v0.4.0.md) para el plan detallado.
 - `useButtonType` warnings en todos los botones (23 instancias)
 - API routes devolvían HTML en vez de JSON en 404
 - Biome corrompía archivos de API routes al formatear
+- Errores de importación en `app/lib/` (ApiError, ApiEndpoint, etc.)
 
 ## [0.1.0] — 2026-09-01
 
