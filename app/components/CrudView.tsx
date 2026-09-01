@@ -169,12 +169,14 @@ export default function CrudView({
 					</div>
 					<div className="flex items-center gap-2">
 						<button
+							type="button"
 							onClick={clearSelection}
 							className="px-3 py-1.5 bg-indigo-700 hover:bg-indigo-800 rounded-lg text-xs font-bold transition"
 						>
 							Cancelar
 						</button>
 						<button
+							type="button"
 							onClick={handleBatchDelete}
 							className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 rounded-lg text-xs font-bold flex items-center gap-1.5 transition"
 						>
@@ -226,6 +228,7 @@ export default function CrudView({
 						/>
 						{searchQuery && (
 							<button
+								type="button"
 								onClick={() => setSearchQuery("")}
 								className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
 							>
@@ -237,6 +240,7 @@ export default function CrudView({
 					{/* Filter toggle */}
 					{selectFields.length > 0 && (
 						<button
+							type="button"
 							onClick={() => setShowFilters(!showFilters)}
 							className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border ${
 								showFilters || hasActiveFilters
@@ -256,6 +260,7 @@ export default function CrudView({
 					{/* Clear filters */}
 					{hasActiveFilters && (
 						<button
+							type="button"
 							onClick={() => {
 								setSearchQuery("");
 								setActiveFilters({});
@@ -307,6 +312,7 @@ export default function CrudView({
 							{onBatchDelete && (
 								<th className="py-3 px-4 w-10">
 									<button
+										type="button"
 										onClick={toggleSelectAll}
 										className="text-slate-400 hover:text-indigo-400 transition"
 									>
@@ -355,6 +361,7 @@ export default function CrudView({
 									{onBatchDelete && (
 										<td className="py-3.5 px-4">
 											<button
+												type="button"
 												onClick={() => toggleSelect(item.id)}
 												className="text-slate-400 hover:text-indigo-400 transition"
 											>
@@ -383,6 +390,7 @@ export default function CrudView({
 									))}
 									<td className="py-3.5 px-5 text-right whitespace-nowrap">
 										<button
+											type="button"
 											onClick={() => openForm(item)}
 											className="p-1.5 text-slate-400 hover:text-indigo-400 rounded transition mr-1.5"
 											title={t.edit}
@@ -390,6 +398,7 @@ export default function CrudView({
 											<Edit size={14} />
 										</button>
 										<button
+											type="button"
 											onClick={() => {
 												if (confirm("¿Eliminar este registro?")) onDelete(item.id);
 											}}

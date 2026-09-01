@@ -1,15 +1,14 @@
 {
 	"name": "esinsa-sga-nextjs",
-	"version": "0.1.0",
-	"private": true,
+	"version": "0.0.2",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "biome lint ./app",
 		"lint:fix": "biome lint --write ./app",
-		"format": "biome format --unsafe ./app",
-		"format:fix": "biome format --write --unsafe ./app",
+		"format": "biome format ./app",
+		"format:fix": "biome format --write ./app",
 		"check": "biome check ./app",
 		"check:fix": "biome check --write ./app",
 		"postinstall": "next telemetry disable"

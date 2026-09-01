@@ -135,13 +135,13 @@ El proyecto usa InsForge (PostgreSQL) con las siguientes tablas:
 
 ```bash
 # Crear nueva migración
-npx @insforge/cli db migrations new <nombre>
+bunx @insforge/cli db migrations new <nombre>
 
 # Aplicar migraciones pendientes
-npx @insforge/cli db migrations up --all
+bunx @insforge/cli db migrations up --all
 
 # Ejecutar query directa
-npx @insforge/cli db query "SELECT * FROM products"
+bunx @insforge/cli db query "SELECT * FROM products"
 ```
 
 ## Despliegue
@@ -153,7 +153,7 @@ npx @insforge/cli db query "SELECT * FROM products"
 bun build
 
 # Desplegar frontend
-npx @insforge/cli deployments deploy .next
+bunx @insforge/cli deployments deploy .next
 ```
 
 ### Vercel

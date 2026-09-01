@@ -117,6 +117,7 @@ export default function MobileAppSimulator({ dbState, isConnected }: MobileAppSi
 
 						<div className="grid grid-cols-2 gap-3">
 							<button
+								type="button"
 								onClick={() => setTab("scan")}
 								className="bg-[#050811] p-4 rounded-2xl border border-slate-800 flex flex-col items-center justify-center gap-2"
 							>
@@ -124,6 +125,7 @@ export default function MobileAppSimulator({ dbState, isConnected }: MobileAppSi
 								<span className="text-xs">Escanear SKU</span>
 							</button>
 							<button
+								type="button"
 								onClick={() => setTab("picking")}
 								className="bg-[#050811] p-4 rounded-2xl border border-slate-800 flex flex-col items-center justify-center gap-2"
 							>

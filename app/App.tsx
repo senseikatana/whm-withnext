@@ -833,6 +833,7 @@ export default function App() {
 
 					{/* Gemini AI Key button */}
 					<button
+						type="button"
 						onClick={() => setIsApiKeyModalOpen(true)}
 						className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
 							hasApiKey
@@ -847,6 +848,7 @@ export default function App() {
 					{/* View selector toggle */}
 					<div className="flex bg-[#0b0f19] border border-slate-800 rounded-xl p-1 shrink-0">
 						<button
+							type="button"
 							onClick={() => setViewMode("desktop")}
 							className={`p-2 rounded-lg transition-all ${viewMode === "desktop" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-white"}`}
 							title="Escritorio WMS"
@@ -854,6 +856,7 @@ export default function App() {
 							<LayoutDashboard size={18} />
 						</button>
 						<button
+							type="button"
 							onClick={() => setViewMode("mobile")}
 							className={`p-2 rounded-lg transition-all ${viewMode === "mobile" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-white"}`}
 							title="Terminal PDA Móvil"
@@ -864,6 +867,7 @@ export default function App() {
 
 					{/* Language selection */}
 					<button
+						type="button"
 						onClick={() => setLang(lang === "es" ? "en" : "es")}
 						className="p-2.5 bg-[#0b0f19] border border-slate-800 rounded-xl hover:text-white text-slate-400 transition"
 						title="Cambiar Idioma"
@@ -958,6 +962,7 @@ export default function App() {
 						{/* Mobile Bottom Navigation */}
 						<nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#050811] border-t border-slate-800 h-16 flex justify-around items-center px-2 z-30">
 							<button
+								type="button"
 								onClick={() => setActiveTab("dashboard")}
 								className={`flex flex-col items-center p-2 ${activeTab === "dashboard" ? "text-indigo-400" : "text-slate-500"}`}
 							>
@@ -965,6 +970,7 @@ export default function App() {
 								<span className="text-[9px] mt-0.5">{t.dashboard}</span>
 							</button>
 							<button
+								type="button"
 								onClick={() => setActiveTab("inventory")}
 								className={`flex flex-col items-center p-2 relative ${activeTab === "inventory" ? "text-indigo-400" : "text-slate-500"}`}
 							>
@@ -972,6 +978,7 @@ export default function App() {
 								<span className="text-[9px] mt-0.5">{t.inventory}</span>
 							</button>
 							<button
+								type="button"
 								onClick={() => setActiveTab("picking")}
 								className={`flex flex-col items-center p-2 ${activeTab === "picking" ? "text-indigo-400" : "text-slate-500"}`}
 							>
@@ -979,6 +986,7 @@ export default function App() {
 								<span className="text-[9px] mt-0.5">{t.picking}</span>
 							</button>
 							<button
+								type="button"
 								onClick={() => setActiveTab("whatsapp")}
 								className={`flex flex-col items-center p-2 ${activeTab === "whatsapp" ? "text-indigo-400" : "text-slate-500"}`}
 							>
@@ -1183,6 +1191,7 @@ export default function App() {
 								<Bot size={20} /> Conectar Inteligencia Artificial
 							</h3>
 							<button
+								type="button"
 								onClick={() => setIsApiKeyModalOpen(false)}
 								className="text-slate-400 hover:text-white transition"
 							>
@@ -1202,6 +1211,7 @@ export default function App() {
 						/>
 						<div className="flex justify-end space-x-3 text-sm">
 							<button
+								type="button"
 								onClick={() => {
 									setTempApiKey("");
 									localStorage.removeItem("gemini_api_key");
@@ -1213,6 +1223,7 @@ export default function App() {
 								Limpiar Clave
 							</button>
 							<button
+								type="button"
 								onClick={handleSaveApiKey}
 								className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold"
 							>

@@ -17,6 +17,7 @@ export default function SidebarItem({
 }: SidebarItemProps) {
 	return (
 		<button
+			type="button"
 			onClick={onClick}
 			className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl mb-1 transition-all duration-200 ${
 				active
