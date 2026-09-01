@@ -1,2 +1,2 @@
-export { callGeminiAPI } from "./gemini-api";
+export { callAI, callGeminiAPI } from "./ai-api";
 export { generateSKU } from "./sku-generator";

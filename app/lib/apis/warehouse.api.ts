@@ -1,4 +1,4 @@
-import { withBasePath } from "./base-path";
+import { withBasePath } from "../base-path";
 import { api } from "../services/api-manager";
 
 /**

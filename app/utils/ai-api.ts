@@ -4,54 +4,69 @@ const DEFAULT_SYSTEM_INSTRUCTION =
 const RETRY_DELAYS: number[] = [1000, 2000, 4000];
 
 /**
- * Calls the Gemini API with automatic retry logic.
+ * Calls the DeepSeek API with automatic retry logic.
  * Falls back to mock responses when no API key is configured.
  */
-export async function callGeminiAPI(
+export async function callAI(
 	prompt: string,
 	systemInstruction: string = DEFAULT_SYSTEM_INSTRUCTION,
 ): Promise<string> {
-	const apiKey = typeof window !== "undefined" ? localStorage.getItem("gemini_api_key") || "" : "";
+	const apiKey =
+		typeof window !== "undefined"
+			? localStorage.getItem("ai_api_key") || ""
+			: "";
 
 	if (!apiKey) {
 		return getMockResponse(prompt);
 	}
 
-	const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+	const url = "https://api.deepseek.com/v1/chat/completions";
 	const payload = {
-		contents: [{ parts: [{ text: prompt }] }],
-		systemInstruction: { parts: [{ text: systemInstruction }] },
+		model: "deepseek-chat",
+		messages: [
+			{ role: "system", content: systemInstruction },
+			{ role: "user", content: prompt },
+		],
+		temperature: 0.7,
+		max_tokens: 2048,
 	};
 
 	for (let i = 0; i <= RETRY_DELAYS.length; i++) {
 		try {
 			const response = await fetch(url, {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${apiKey}`,
+				},
 				body: JSON.stringify(payload),
 			});
 			if (!response.ok) throw new Error(`API Error: ${response.status}`);
 			const data = await response.json();
-			return data.candidates?.[0]?.content?.parts?.[0]?.text || "Sin respuesta del modelo.";
+			return (
+				data.choices?.[0]?.message?.content || "Sin respuesta del modelo."
+			);
 		} catch (err) {
 			if (i === RETRY_DELAYS.length) {
-				console.error("Gemini API Error:", err);
-				return "Error al comunicar con Gemini API.";
+				console.error("DeepSeek API Error:", err);
+				return "Error al comunicar con DeepSeek API.";
 			}
 			await new Promise((res) => setTimeout(res, RETRY_DELAYS[i]));
 		}
 	}
 
-	return "Error al comunicar con Gemini API.";
+	return "Error al comunicar con DeepSeek API.";
 }
 
+// Backward compatibility alias
+export const callGeminiAPI = callAI;
+
 /**
- * Provides mock responses when no Gemini API key is configured.
+ * Provides mock responses when no API key is configured.
  */
 function getMockResponse(prompt: string): string {
 	const lower = prompt.toLowerCase();
 
-	// Simulate delay
 	if (lower.includes("json")) {
 		if (lower.includes("inventory") || lower.includes("products")) {
 			return JSON.stringify({

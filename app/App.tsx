@@ -28,6 +28,13 @@ import SapIntegrationView from "./components/SapIntegrationView";
 import SidebarItem from "./components/SidebarItem";
 import VoicePickingView from "./components/VoicePickingView";
 import WhatsAppAgentView from "./components/WhatsAppAgentView";
+import { withBasePath } from "./lib/base-path";
+import {
+	normalizeCustomer,
+	normalizeOrder,
+	normalizePicking,
+	normalizeProduct,
+} from "./lib/normalize";
 
 // initial mock/fallback data matching backend seed database
 const INITIAL_PRODUCTS = [
@@ -544,10 +551,10 @@ export default function App() {
 		setLoading(true);
 		try {
 			const endpoints = [
-				{ key: "products", url: "/api/products" },
-				{ key: "customers", url: "/api/customers" },
-				{ key: "orders", url: "/api/orders" },
-				{ key: "picking", url: "/api/picking-tasks" },
+				{ key: "products", url: withBasePath("/api/products"), normalize: normalizeProduct },
+				{ key: "customers", url: withBasePath("/api/customers"), normalize: normalizeCustomer },
+				{ key: "orders", url: withBasePath("/api/orders"), normalize: normalizeOrder },
+				{ key: "picking", url: withBasePath("/api/picking-tasks"), normalize: normalizePicking },
 			];
 
 			const results = await Promise.allSettled(
@@ -569,7 +576,8 @@ export default function App() {
 				for (let i = 0; i < endpoints.length; i++) {
 					const result = results[i];
 					if (result.status === "fulfilled" && result.value?.success) {
-						(next as any)[endpoints[i].key] = result.value.data.items;
+						const items = result.value.data.items ?? [];
+						(next as any)[endpoints[i].key] = items.map(endpoints[i].normalize);
 						connected = true;
 					}
 				}
@@ -590,17 +598,17 @@ export default function App() {
 	// Filter outOrders (client type or order status) and inOrders (supplier type)
 	const filteredInOrders = useMemo(() => {
 		return dbState.orders.filter(
-			(o) =>
-				o.orderNumber.startsWith("REC") ||
-				o.customerName.toLowerCase().includes("garcía") ||
-				o.customerName.toLowerCase().includes("martínez") ||
-				o.customerName.toLowerCase().includes("distribuciones") ||
-				o.customerName.toLowerCase().includes("logística"),
+			(o: any) =>
+				o.orderNumber?.startsWith("REC") ||
+				o.customerName?.toLowerCase().includes("garcía") ||
+				o.customerName?.toLowerCase().includes("martínez") ||
+				o.customerName?.toLowerCase().includes("distribuciones") ||
+				o.customerName?.toLowerCase().includes("logística"),
 		);
 	}, [dbState.orders]);
 
 	const filteredOutOrders = useMemo(() => {
-		return dbState.orders.filter((o) => !filteredInOrders.includes(o));
+		return dbState.orders.filter((o: any) => !filteredInOrders.includes(o));
 	}, [dbState.orders, filteredInOrders]);
 
 	// Handle Saves / Creates
@@ -615,7 +623,7 @@ export default function App() {
 
 			if (isBackendConnected && endpoint) {
 				const method = id ? "PUT" : "POST";
-				const url = id ? `/api${endpoint}/${id}` : `/api${endpoint}`;
+				const url = withBasePath(id ? `/api${endpoint}/${id}` : `/api${endpoint}`);
 
 				// adapt data for backend schema if needed
 				const payload = { ...data };
@@ -674,7 +682,7 @@ export default function App() {
 			else if (entity === "picking") endpoint = "/picking-tasks";
 
 			if (isBackendConnected && endpoint) {
-				const res = await fetch(`/api${endpoint}/${id}`, { method: "DELETE" });
+				const res = await fetch(withBasePath(`/api${endpoint}/${id}`), { method: "DELETE" });
 				const json = await res.json();
 				if (json.success) {
 					loadData();
@@ -846,7 +854,7 @@ export default function App() {
 						className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
 							hasApiKey
 								? "bg-indigo-950/60 text-indigo-300 border-indigo-800/80 hover:bg-indigo-900/40"
-								: "bg-amber-955/65 text-amber-300 border-amber-800/80 hover:bg-amber-900/40"
+								: "bg-amber-950/60 text-amber-300 border-amber-800/80 hover:bg-amber-900/40"
 						}`}
 					>
 						<Bot size={14} className={hasApiKey ? "text-indigo-400" : "text-amber-400"} />
@@ -1182,7 +1190,6 @@ export default function App() {
 									setDbState={setDbState}
 									handleSave={handleSave}
 									handleDelete={handleDelete}
-									isConnected={isBackendConnected}
 								/>
 							</div>
 						</div>

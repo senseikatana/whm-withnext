@@ -4,6 +4,9 @@
  * - / → Landing page (portfolio)
  * - /works/whm-withnext/* → Proxy a InsForge (WarehouseFlow SGA)
  * - /works/* → Libre para otros proyectos
+ *
+ * Note: basePath is handled by Next.js (app/lib/base-path.ts).
+ * The Worker only strips the prefix and proxies.
  */
 
 interface Env {
@@ -14,12 +17,12 @@ interface WorkerHandler {
 	fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response>;
 }
 
-const UPSTREAM: string = "https://8cc79ec9.insforge.site";
-const PROJECT_PATH: string = "/works/whm-withnext";
+const UPSTREAM = "https://8cc79ec9.insforge.site";
+const PROJECT_PATH = "/works/whm-withnext";
 
 const REDIRECT_STATUSES: readonly number[] = [301, 302, 303, 307, 308];
 
-const LANDING_HTML: string = `<!DOCTYPE html>
+const LANDING_HTML = `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -62,51 +65,47 @@ const LANDING_HTML: string = `<!DOCTYPE html>
 </html>`;
 
 const worker: WorkerHandler = {
-	async fetch(request: Request, _env: Env, _ctx: ExecutionContext): Promise<Response> {
-		const url: URL = new URL(request.url);
-		const pathname: string = url.pathname;
+	async fetch(request: Request): Promise<Response> {
+		const url = new URL(request.url);
+		const pathname = url.pathname;
 
-		// Landing page en la raíz
+		// Landing page
 		if (pathname === "/" || pathname === "") {
 			return new Response(LANDING_HTML, {
 				headers: { "Content-Type": "text/html; charset=utf-8" },
 			});
 		}
 
-		// Solo interceptar rutas que empiecen con /works/whm-withnext
+		// Only intercept /works/whm-withnext
 		if (!pathname.startsWith(PROJECT_PATH)) {
 			return fetch(request);
 		}
 
-		// Construir la URL upstream: quitar el prefijo de subruta
-		const upstreamPath: string = pathname.slice(PROJECT_PATH.length) || "/";
-		const upstreamUrl: URL = new URL(upstreamPath + url.search, UPSTREAM);
+		// Strip prefix and proxy
+		const upstreamPath = pathname.slice(PROJECT_PATH.length) || "/";
+		const upstreamUrl = new URL(upstreamPath + url.search, UPSTREAM);
 
-		// Clonar headers y añadir los necesarios para el proxy
-		const headers: Headers = new Headers(request.headers);
+		const headers = new Headers(request.headers);
 		headers.set("Host", upstreamUrl.host);
 		headers.set("X-Forwarded-Host", url.host);
 		headers.set("X-Forwarded-Proto", url.protocol.replace(":", ""));
-		headers.set("X-Original-Path", pathname);
-
-		// Crear la request al upstream
-		const upstreamRequest: Request = new Request(upstreamUrl.toString(), {
-			method: request.method,
-			headers,
-			body: request.body,
-			redirect: "manual",
-		});
 
 		try {
-			const response: Response = await fetch(upstreamRequest);
+			const response = await fetch(
+				new Request(upstreamUrl.toString(), {
+					method: request.method,
+					headers,
+					body: request.body,
+					redirect: "manual",
+				}),
+			);
 
-			// Si es un redirect, reescribir la Location header
+			// Rewrite redirects
 			if (REDIRECT_STATUSES.includes(response.status)) {
-				const location: string | null = response.headers.get("Location");
+				const location = response.headers.get("Location");
 				if (location) {
-					const newLocation: string = rewriteRedirect(location, upstreamUrl, url);
-					const newHeaders: Headers = new Headers(response.headers);
-					newHeaders.set("Location", newLocation);
+					const newHeaders = new Headers(response.headers);
+					newHeaders.set("Location", rewriteRedirect(location, upstreamUrl, url));
 					return new Response(response.body, {
 						status: response.status,
 						statusText: response.statusText,
@@ -115,49 +114,17 @@ const worker: WorkerHandler = {
 				}
 			}
 
-			// Para respuestas HTML, reescribir las URLs de assets
-			const contentType: string = response.headers.get("Content-Type") || "";
-			if (contentType.includes("text/html")) {
-				let body: string = await response.text();
-
-				// Reescribir rutas absolutas de Next.js
-				body = body.replace(
-					/(href|src|action)="\/(?!works\/whm-withnext)/g,
-					`$1="${PROJECT_PATH}/`,
-				);
-				body = body.replace(
-					/(href|src|action)='\/(?!works\/whm-withnext)/g,
-					`$1='${PROJECT_PATH}/`,
-				);
-
-				// Reescribir URLs en scripts inline
-				body = body.replace(/fetch\("\/api\//g, `fetch("${PROJECT_PATH}/api/`);
-				body = body.replace(/fetch\('\/api\//g, `fetch('${PROJECT_PATH}/api/`);
-
-				const newHeaders: Headers = new Headers(response.headers);
-				newHeaders.delete("Content-Length");
-
-				return new Response(body, {
-					status: response.status,
-					statusText: response.statusText,
-					headers: newHeaders,
-				});
-			}
-
 			return response;
 		} catch (err: unknown) {
-			const message: string = err instanceof Error ? err.message : "Unknown error";
+			const message = err instanceof Error ? err.message : "Unknown error";
 			return new Response(`Proxy Error: ${message}`, { status: 502 });
 		}
 	},
 };
 
-/**
- * Reescribe redirects del upstream para apuntar a la subruta correcta.
- */
 function rewriteRedirect(location: string, upstreamUrl: URL, originalUrl: URL): string {
 	try {
-		const redirectUrl: URL = new URL(location, upstreamUrl);
+		const redirectUrl = new URL(location, upstreamUrl);
 		if (redirectUrl.host === upstreamUrl.host) {
 			return `${originalUrl.origin}${PROJECT_PATH}${redirectUrl.pathname}${redirectUrl.search}`;
 		}

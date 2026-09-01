@@ -61,5 +61,6 @@ next-env.d.ts
 .windsurf
 .devin
 .cursor
+.vscode
 
 RELEASES/

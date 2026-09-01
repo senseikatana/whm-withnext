@@ -5,7 +5,7 @@ import { useState } from "react";
 
 // local call helper
 const callGeminiLocal = async (prompt: string) => {
-	const apiKey = typeof window !== "undefined" ? localStorage.getItem("gemini_api_key") || "" : "";
+	const apiKey = typeof window !== "undefined" ? localStorage.getItem("ai_api_key") || "" : "";
 	if (!apiKey) {
 		await new Promise((res) => setTimeout(res, 800));
 		return "Ruta Inteligente Generada (Mock):\n1. Empieza en el Muelle de Recepción A.\n2. Recoge SKU-001 en A-01-01.\n3. Muévete al Pasillo B y recoge SKU-003 en B-05-02.\n4. Lleva el carro al área de empaque C.\n\nEsta secuencia optimiza el recorrido reduciendo el tránsito en un 28% comparado con discrete picking.";

@@ -9,7 +9,6 @@ interface MobileAppSimulatorProps {
 	setDbState: React.Dispatch<React.SetStateAction<any>>;
 	handleSave: (entity: string, data: any, id: number | null) => void;
 	handleDelete: (entity: string, id: number) => void;
-	isConnected: boolean;
 }
 
 const getStatusColor = (status: string) => {
@@ -43,7 +42,7 @@ const getStatusColor = (status: string) => {
 	return "bg-slate-800 text-slate-400 border border-slate-700/50";
 };
 
-export default function MobileAppSimulator({ dbState, isConnected }: MobileAppSimulatorProps) {
+export default function MobileAppSimulator({ dbState }: MobileAppSimulatorProps) {
 	const [tab, setTab] = useState<"home" | "scan" | "picking" | "inventory">("home");
 	const [scanInput, setScanInput] = useState("");
 	const [scanResult, setScanResult] = useState<string | null>(null);
@@ -54,32 +53,9 @@ export default function MobileAppSimulator({ dbState, isConnected }: MobileAppSi
 		if (!scanInput) return;
 		setScanning(true);
 
-		// Call scan endpoint on backend
-		try {
-			if (isConnected) {
-				const res = await fetch("/api/products/scan", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						code: scanInput,
-						location: "A-01-01",
-						scannedBy: "Carlos (PDA)",
-					}),
-				});
-				const json = await res.json();
-				if (json.success) {
-					setScanResult(
-						`Éxito: ${json.data.productName || "Producto Escaneado"}. Stock: ${json.data.stock || 0}.`,
-					);
-					setScanning(false);
-					return;
-				}
-			}
-		} catch (_err) {
-			console.warn("Scan failed, running simulated local scan response.");
-		}
-
-		// Local scan fallback
+		// Local scan (no backend scan endpoint)
+		// Simulate delay
+		await new Promise((res) => setTimeout(res, 800));
 		const matched = dbState.products.find((p: any) => p.sku === scanInput);
 		if (matched) {
 			setScanResult(
