@@ -1,4 +1,4 @@
-import { handlePut, handleDelete } from "../../helper";
+import { handleDelete, handlePut } from "../../helper";
 
 export const PUT = (request: Request, { params }: { params: Promise<{ id: string }> }) =>
 	params.then(({ id }) => handlePut("customers", id, request));

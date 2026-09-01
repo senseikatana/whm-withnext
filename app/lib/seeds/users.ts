@@ -1,10 +1,4 @@
-export type UserRole =
-	| "admin"
-	| "manager"
-	| "supervisor"
-	| "operator"
-	| "picker"
-	| "viewer";
+export type UserRole = "admin" | "manager" | "supervisor" | "operator" | "picker" | "viewer";
 
 export interface UserProfile {
 	id: string;
@@ -21,10 +15,7 @@ export interface UserProfile {
  * NOTA: Estos usuarios deben crearse vía auth.signUp() o desde el dashboard de InsForge.
  * El seed solo perfiles, no cuentas de auth.
  */
-export const SEED_USER_PROFILES: Omit<
-	UserProfile,
-	"id" | "created_at" | "updated_at"
->[] = [
+export const SEED_USER_PROFILES: Omit<UserProfile, "id" | "created_at" | "updated_at">[] = [
 	{
 		email: "admin@esinsa.com",
 		name: "Sergio Jurado",
@@ -115,14 +106,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, string[]> = {
 		"sap",
 		"reports",
 	],
-	supervisor: [
-		"dashboard",
-		"inventory",
-		"orders",
-		"picking",
-		"routes",
-		"staff",
-	],
+	supervisor: ["dashboard", "inventory", "orders", "picking", "routes", "staff"],
 	operator: ["dashboard", "inventory", "orders", "picking"],
 	picker: ["dashboard", "picking"],
 	viewer: ["dashboard"],

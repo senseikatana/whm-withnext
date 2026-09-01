@@ -1,7 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { ApolloProvider } from "@apollo/client/react";
+import type { ReactNode } from "react";
 import { apolloClient } from "./lib/apollo";
 import { AuthProvider } from "./lib/auth-context";
 

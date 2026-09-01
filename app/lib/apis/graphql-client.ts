@@ -109,9 +109,12 @@ export async function loadOrderDetail(slug: string) {
 			total_items: number;
 			total_value: number;
 		};
-	}>(`query OrderDetail($slug: String!) {
+	}>(
+		`query OrderDetail($slug: String!) {
 		order(slug: $slug) {
 			id slug order_number customer_name status priority total_items total_value
 		}
-	}`, { slug });
+	}`,
+		{ slug },
+	);
 }

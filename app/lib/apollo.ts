@@ -1,7 +1,7 @@
 "use client";
 
-import { ApolloClient } from "@apollo/client/core";
 import { InMemoryCache } from "@apollo/client/cache";
+import { ApolloClient } from "@apollo/client/core";
 import { HttpLink } from "@apollo/client/link/http";
 
 const httpLink = new HttpLink({

@@ -1,7 +1,10 @@
 import insforge from "../../lib/insforge";
-import { slugify, uniqueSlug } from "../../lib/services/slugify.service";
+import { uniqueSlug } from "../../lib/services/slugify.service";
 
-async function query(table: string, options?: { limit?: number; offset?: number; filters?: Record<string, any> }) {
+async function query(
+	table: string,
+	options?: { limit?: number; offset?: number; filters?: Record<string, any> },
+) {
 	let q = insforge.database.from(table).select();
 
 	if (options?.filters) {
@@ -24,47 +27,32 @@ async function query(table: string, options?: { limit?: number; offset?: number;
 }
 
 async function getBySlug(table: string, slug: string) {
-	const { data, error } = await insforge.database
-		.from(table)
-		.select()
-		.eq("slug", slug)
-		.single();
+	const { data, error } = await insforge.database.from(table).select().eq("slug", slug).single();
 	if (error) throw new Error(error.message);
 	return data;
 }
 
 async function insert(table: string, input: Record<string, any>, slugPrefix?: string) {
 	const slug = input.slug || uniqueSlug(slugPrefix || input.name || input.order_number || "item");
-	const { data, error } = await insforge.database
-		.from(table)
-		.insert([{ ...input, slug }]);
+	const { data, error } = await insforge.database.from(table).insert([{ ...input, slug }]);
 	if (error) throw new Error(error.message);
 	return data?.[0];
 }
 
 async function update(table: string, slug: string, input: Record<string, any>) {
-	const { data, error } = await insforge.database
-		.from(table)
-		.update(input)
-		.eq("slug", slug);
+	const { data, error } = await insforge.database.from(table).update(input).eq("slug", slug);
 	if (error) throw new Error(error.message);
 	return data?.[0];
 }
 
 async function remove(table: string, slug: string) {
-	const { error } = await insforge.database
-		.from(table)
-		.delete()
-		.eq("slug", slug);
+	const { error } = await insforge.database.from(table).delete().eq("slug", slug);
 	if (error) throw new Error(error.message);
 	return true;
 }
 
 async function removeBatch(table: string, slugs: string[]) {
-	const { error } = await insforge.database
-		.from(table)
-		.delete()
-		.in("slug", slugs);
+	const { error } = await insforge.database.from(table).delete().in("slug", slugs);
 	if (error) throw new Error(error.message);
 	return true;
 }
