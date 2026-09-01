@@ -3,6 +3,7 @@ export const typeDefs = `#graphql
 
   type Product {
     id: Int!
+    slug: String!
     sku: String!
     name: String!
     category: String!
@@ -16,6 +17,7 @@ export const typeDefs = `#graphql
 
   type Customer {
     id: Int!
+    slug: String!
     code: String!
     name: String!
     type: String!
@@ -28,6 +30,7 @@ export const typeDefs = `#graphql
 
   type Order {
     id: Int!
+    slug: String!
     order_number: String!
     customer_name: String!
     status: String!
@@ -40,6 +43,7 @@ export const typeDefs = `#graphql
 
   type PickingTask {
     id: Int!
+    slug: String!
     task_number: String!
     order_number: String!
     assigned_to: String!
@@ -53,6 +57,7 @@ export const typeDefs = `#graphql
 
   type Staff {
     id: Int!
+    slug: String!
     name: String!
     role: String!
     zone: String!
@@ -85,25 +90,25 @@ export const typeDefs = `#graphql
   type Query {
     # Products
     products(limit: Int, offset: Int, category: String, search: String): [Product!]!
-    product(id: Int!): Product
+    product(slug: String!): Product
 
     # Customers
     customers(limit: Int, offset: Int, type: String, search: String): [Customer!]!
-    customer(id: Int!): Customer
+    customer(slug: String!): Customer
 
     # Orders
     orders(limit: Int, offset: Int, status: String, priority: String, search: String): [Order!]!
-    order(id: Int!): Order
+    order(slug: String!): Order
     inboundOrders(limit: Int): [Order!]!
     outboundOrders(limit: Int): [Order!]!
 
     # Picking
     pickingTasks(limit: Int, offset: Int, status: String): [PickingTask!]!
-    pickingTask(id: Int!): PickingTask
+    pickingTask(slug: String!): PickingTask
 
     # Staff
     staff(limit: Int, offset: Int, role: String, status: String): [Staff!]!
-    staffMember(id: Int!): Staff
+    staffMember(slug: String!): Staff
 
     # Dashboard
     dashboardStats: DashboardStats!
@@ -160,30 +165,30 @@ export const typeDefs = `#graphql
   type Mutation {
     # Products
     createProduct(input: ProductInput!): Product!
-    updateProduct(id: Int!, input: ProductInput!): Product!
-    deleteProduct(id: Int!): Boolean!
-    deleteProducts(ids: [Int!]!): Boolean!
+    updateProduct(slug: String!, input: ProductInput!): Product!
+    deleteProduct(slug: String!): Boolean!
+    deleteProducts(slugs: [String!]!): Boolean!
 
     # Customers
     createCustomer(input: CustomerInput!): Customer!
-    updateCustomer(id: Int!, input: CustomerInput!): Customer!
-    deleteCustomer(id: Int!): Boolean!
+    updateCustomer(slug: String!, input: CustomerInput!): Customer!
+    deleteCustomer(slug: String!): Boolean!
 
     # Orders
     createOrder(input: OrderInput!): Order!
-    updateOrder(id: Int!, input: OrderInput!): Order!
-    deleteOrder(id: Int!): Boolean!
-    deleteOrders(ids: [Int!]!): Boolean!
+    updateOrder(slug: String!, input: OrderInput!): Order!
+    deleteOrder(slug: String!): Boolean!
+    deleteOrders(slugs: [String!]!): Boolean!
 
     # Picking
     createPickingTask(input: PickingTaskInput!): PickingTask!
-    updatePickingTask(id: Int!, input: PickingTaskInput!): PickingTask!
-    deletePickingTask(id: Int!): Boolean!
+    updatePickingTask(slug: String!, input: PickingTaskInput!): PickingTask!
+    deletePickingTask(slug: String!): Boolean!
 
     # Staff
     createStaff(input: StaffInput!): Staff!
-    updateStaff(id: Int!, input: StaffInput!): Staff!
-    deleteStaff(id: Int!): Boolean!
-    deleteStaffMembers(ids: [Int!]!): Boolean!
+    updateStaff(slug: String!, input: StaffInput!): Staff!
+    deleteStaff(slug: String!): Boolean!
+    deleteStaffMembers(slugs: [String!]!): Boolean!
   }
 `;

@@ -30,6 +30,7 @@
 	"dependencies": {
 		"@apollo/client": "^4.2.12",
 		"@apollo/server": "^5.5.1",
+		"@as-integrations/next": "^4.1.0",
 		"@insforge/sdk": "^1.5.2",
 		"graphql": "^17.0.2",
 		"lucide-react": "^1.38.0",

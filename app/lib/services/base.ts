@@ -1,5 +1,5 @@
 import insforge from "../insforge";
-
+import ErrorsService from "./api-error";
 export interface CrudResult<T> {
 	data: T | null;
 	error: string | null;
@@ -9,6 +9,8 @@ export interface ListResult<T> {
 	data: T[];
 	error: string | null;
 }
+
+const { notFound }: ErrorsService = ErrorsService.getInstance();
 
 /**
  * Base CRUD service for InsForge tables.
@@ -26,7 +28,7 @@ export function createCrudService<T extends Record<string, any>>(table: string) 
 				if (error) return { data: [], error: error.message };
 				return { data: (data as T[]) || [], error: null };
 			} catch (e: any) {
-				return { data: [], error: e.message || "Error fetching data" };
+				return { data: [], error: notFound(e.message || "Error fetching records").message };
 			}
 		},
 
@@ -36,7 +38,7 @@ export function createCrudService<T extends Record<string, any>>(table: string) 
 				if (error) return { data: null, error: error.message };
 				return { data: data as T, error: null };
 			} catch (e: any) {
-				return { data: null, error: e.message || "Error fetching record" };
+				return { data: null, error: notFound(e.message || "Error fetching record").message };
 			}
 		},
 
@@ -46,7 +48,7 @@ export function createCrudService<T extends Record<string, any>>(table: string) 
 				if (error) return { data: null, error: error.message };
 				return { data: (data as unknown as T[])?.[0] ?? null, error: null };
 			} catch (e: any) {
-				return { data: null, error: e.message || "Error creating record" };
+				return { data: null, error: notFound(e.message || "Error creating record").message };
 			}
 		},
 
@@ -56,7 +58,7 @@ export function createCrudService<T extends Record<string, any>>(table: string) 
 				if (error) return { data: null, error: error.message };
 				return { data: (data as unknown as T[])?.[0] ?? null, error: null };
 			} catch (e: any) {
-				return { data: null, error: e.message || "Error updating record" };
+				return { data: null, error: notFound(e.message || "Error updating record").message };
 			}
 		},
 
@@ -66,7 +68,7 @@ export function createCrudService<T extends Record<string, any>>(table: string) 
 				if (error) return { data: null, error: error.message };
 				return { data: null, error: null };
 			} catch (e: any) {
-				return { data: null, error: e.message || "Error deleting record" };
+				return { data: null, error: notFound(e.message || "Error deleting record").message };
 			}
 		},
 
@@ -76,7 +78,7 @@ export function createCrudService<T extends Record<string, any>>(table: string) 
 				if (error) return { data: null, error: error.message };
 				return { data: null, error: null };
 			} catch (e: any) {
-				return { data: null, error: e.message || "Error deleting records" };
+				return { data: null, error: notFound(e.message || "Error deleting records").message };
 			}
 		},
 	};

@@ -1,5 +1,9 @@
-export { customersService } from "./customers";
-export { ordersService } from "./orders";
-export { pickingService } from "./picking";
-export { productsService } from "./products";
-export { staffService } from "./staff";
+export * from "./api-error";
+export * from "./api-manager";
+export * from "./base";
+export * from "./customers";
+export * from "./orders";
+export * from "./picking";
+export * from "./products";
+export * from "./slugify.service";
+export * from "./staff";
