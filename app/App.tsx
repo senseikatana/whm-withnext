@@ -366,16 +366,16 @@ const INITIAL_SAP_LOGS = [
 	},
 ];
 
-// Helper to get Gemini API key (SSR-safe)
-const getGeminiApiKey = () =>
-	typeof window !== "undefined" ? localStorage.getItem("gemini_api_key") || "" : "";
+// Helper to get AI API key (SSR-safe)
+const getAIApiKey = () =>
+	typeof window !== "undefined" ? localStorage.getItem("ai_api_key") || "" : "";
 
-// callGeminiAPI helper
+// callAI helper (DeepSeek)
 const callGeminiAPI = async (
 	prompt: string,
 	systemInstruction = "Eres el consultor logístico y asistente experto AI de WarehouseFlow. Tus respuestas deben ser sumamente profesionales, concisas y directas.",
 ) => {
-	const apiKey = getGeminiApiKey();
+	const apiKey = getAIApiKey();
 	if (!apiKey) {
 		await new Promise((res) => setTimeout(res, 800));
 		if (prompt.toLowerCase().includes("json")) {
@@ -421,24 +421,32 @@ const callGeminiAPI = async (
 		return "Simulación de Asistente IA de WarehouseFlow: Se sugiere optimizar la ubicación de la categoría Palets debido a una alta tasa de rotación (Clase A).";
 	}
 
-	const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+	const url = "https://api.deepseek.com/v1/chat/completions";
 	const payload = {
-		contents: [{ parts: [{ text: prompt }] }],
-		systemInstruction: { parts: [{ text: systemInstruction }] },
+		model: "deepseek-chat",
+		messages: [
+			{ role: "system", content: systemInstruction },
+			{ role: "user", content: prompt },
+		],
+		temperature: 0.7,
+		max_tokens: 2048,
 	};
 
 	try {
 		const response = await fetch(url, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${apiKey}`,
+			},
 			body: JSON.stringify(payload),
 		});
 		if (!response.ok) throw new Error("API Error");
 		const data = await response.json();
-		return data.candidates?.[0]?.content?.parts?.[0]?.text || "Sin respuesta del modelo.";
+		return data.choices?.[0]?.message?.content || "Sin respuesta del modelo.";
 	} catch (err) {
-		console.error("Gemini API Error:", err);
-		return "Error al comunicar con Gemini API.";
+		console.error("DeepSeek API Error:", err);
+		return "Error al comunicar con DeepSeek API.";
 	}
 };
 
