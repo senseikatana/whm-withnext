@@ -1181,7 +1181,7 @@ export default function App() {
 				) : (
 					/* Handheld PDA View Simulator */
 					<main className="flex-1 bg-[#050811] flex justify-center items-center p-4 overflow-y-auto">
-						<div className="w-full max-w-[390px] h-[750px] bg-[#0b0f19] rounded-[3rem] border-[10px] border-[#050811] relative overflow-hidden flex flex-col shadow-2xl shadow-indigo-950/20">
+						<div className="w-full bg-[#0b0f19] rounded-[3rem]  border-[#050811] relative overflow-hidden flex flex-col shadow-2xl shadow-indigo-950/20">
 							{/* PDA Top Screen Header */}
 							<div className="bg-indigo-600 text-white px-5 pt-7 pb-4 shrink-0 flex justify-between items-center">
 								<div className="flex items-center space-x-2">
@@ -1194,10 +1194,11 @@ export default function App() {
 							{/* PDA Emulator body */}
 							<div className="flex-1 overflow-y-auto bg-[#0b0f19] flex flex-col">
 								<MobileAppSimulator
-									dbState={dbState}
+									dbState={dbState.products[0].id ? dbState : { ...dbState, products: INITIAL_PRODUCTS }}
 									setDbState={setDbState}
 									handleSave={handleSave}
 									handleDelete={handleDelete}
+									isConnected={isBackendConnected}
 								/>
 							</div>
 						</div>
