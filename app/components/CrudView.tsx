@@ -1,6 +1,18 @@
 "use client";
 
-import { Bot, CheckSquare, Edit, Filter, Loader2, Plus, Search, Sparkles, Square, Trash2, X } from "lucide-react";
+import {
+	Bot,
+	CheckSquare,
+	Edit,
+	Filter,
+	Loader2,
+	Plus,
+	Search,
+	Sparkles,
+	Square,
+	Trash2,
+	X,
+} from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
 import type { CrudViewProps } from "../interfaces";
@@ -159,8 +171,14 @@ Campos: ${fieldsDesc}
 Responde SOLO con JSON válido, sin markdown, sin explicaciones.
 El JSON debe tener exactamente las claves: ${fields.map((f) => f.key).join(", ")}`;
 
-			const response = await callAI(prompt, "Eres un generador de datos JSON para sistemas de gestión de almacén.");
-			const cleaned = response.replace(/```json/g, "").replace(/```/g, "").trim();
+			const response = await callAI(
+				prompt,
+				"Eres un generador de datos JSON para sistemas de gestión de almacén.",
+			);
+			const cleaned = response
+				.replace(/```json/g, "")
+				.replace(/```/g, "")
+				.trim();
 			const parsed = JSON.parse(cleaned);
 
 			// Merge with form data, keeping existing values
@@ -449,9 +467,7 @@ El JSON debe tener exactamente las claves: ${fields.map((f) => f.key).join(", ")
 								<X size={18} />
 							</button>
 						</div>
-						<p className="text-xs text-slate-400 mb-4">
-							Selecciona cuántos registros quieres generar.
-						</p>
+						<p className="text-xs text-slate-400 mb-4">Selecciona cuántos registros quieres generar.</p>
 						<div className="flex items-center gap-3 mb-6">
 							<button
 								type="button"
@@ -537,9 +553,7 @@ El JSON debe tener exactamente las claves: ${fields.map((f) => f.key).join(", ")
 						className="bg-[#0b0f19] border border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl"
 					>
 						<div className="flex justify-between items-center mb-4">
-							<h3 className="text-base font-bold text-white">
-								{editingId ? t.edit : t.add} Registro
-							</h3>
+							<h3 className="text-base font-bold text-white">{editingId ? t.edit : t.add} Registro</h3>
 							{!editingId && (
 								<button
 									type="button"
@@ -547,11 +561,7 @@ El JSON debe tener exactamente las claves: ${fields.map((f) => f.key).join(", ")
 									disabled={aiLoading}
 									className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 text-xs font-bold rounded-lg transition disabled:opacity-50"
 								>
-									{aiLoading ? (
-										<Loader2 size={14} className="animate-spin" />
-									) : (
-										<Bot size={14} />
-									)}
+									{aiLoading ? <Loader2 size={14} className="animate-spin" /> : <Bot size={14} />}
 									{aiLoading ? "Generando..." : "Auto-completar IA"}
 								</button>
 							)}

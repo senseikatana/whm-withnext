@@ -144,6 +144,90 @@ bunx @insforge/cli db migrations up --all
 bunx @insforge/cli db query "SELECT * FROM products"
 ```
 
+## Autenticación
+
+### Métodos de login
+
+| Método | Descripción |
+|--------|-------------|
+| Email/Password | Login tradicional con email y contraseña |
+| Google OAuth | Login con cuenta de Google |
+| GitHub OAuth | Login con cuenta de GitHub |
+
+### Usuarios de prueba
+
+| Email | Contraseña | Rol |
+|-------|------------|-----|
+| admin@esinsa.com | admin123 | Administrador |
+| gerente@esinsa.com | gerente123 | Gerente |
+| supervisor@esinsa.com | super123 | Supervisor |
+| operario1@esinsa.com | opera123 | Operario |
+| picker1@esinsa.com | picker123 | Picker |
+| viewer@esinsa.com | viewer123 | Visor |
+
+### Roles y permisos
+
+| Rol | Descripción | Permisos |
+|-----|-------------|----------|
+| `admin` | Administrador | Acceso total al sistema |
+| `manager` | Gerente | Gestión operativa, reportes |
+| `supervisor` | Supervisor | Supervisión de operaciones y personal |
+| `operator` | Operario | Inventario, recepciones, expediciones |
+| `picker` | Picker | Solo picking |
+| `viewer` | Visor | Solo lectura del dashboard |
+
+### Configurar OAuth
+
+Para habilitar Google y GitHub OAuth:
+
+1. Ve al dashboard de InsForge → **Authentication → Providers**
+2. Habilita **Google** y **GitHub**
+3. Configura los Client ID y Client Secret de cada provider
+4. Las redirect URIs deben incluir:
+   - `https://8cc79ec9.ap-southeast.insforge.app/auth/callback/google`
+   - `https://whm.senseikatana.com/auth/callback/google`
+   - `https://8cc79ec9.ap-southeast.insforge.app/auth/callback/github`
+   - `https://whm.senseikatana.com/auth/callback/github`
+
+## CI/CD
+
+### GitHub Actions
+
+El proyecto usa GitHub Actions para CI/CD automático. En cada push a `main`:
+
+1. **Lint & Build** — verifica que el código pasa Biome y compila
+2. **Deploy to InsForge** — despliega el frontend
+3. **Deploy Cloudflare Worker** — despliega el proxy
+
+### Configurar secrets de GitHub
+
+Ve a **Settings → Secrets and variables → Actions** y añade:
+
+| Secret | Descripción |
+|--------|-------------|
+| `NEXT_PUBLIC_INSFORGE_URL` | URL de InsForge (`https://8cc79ec9.ap-southeast.insforge.app`) |
+| `NEXT_PUBLIC_INSFORGE_ANON_KEY` | Anon key de InsForge |
+| `INSFORGE_ACCESS_TOKEN` | Token de acceso de InsForge |
+| `CLOUDFLARE_API_TOKEN` | API token de Cloudflare |
+| `CLOUDFLARE_ACCOUNT_ID` | Account ID de Cloudflare |
+
+### Obtener tokens
+
+```bash
+# InsForge access token
+npx -y @insforge/cli@latest secrets get API_KEY
+
+# Cloudflare: ve a dash.cloudflare.com → My Profile → API Tokens
+```
+
+### Flujo
+
+```
+Push a main → GitHub Actions → Lint + Build → Deploy InsForge + Worker
+Push a dev  → GitHub Actions → Lint + Build (sin deploy)
+PR          → GitHub Actions → Lint + Build (sin deploy)
+```
+
 ## Despliegue
 
 ### Scripts disponibles
@@ -176,12 +260,14 @@ bun run db:deploy
 bun run worker:deploy
 ```
 
-### Vercel (alternativo)
-
-```bash
-bun add -g vercel
-vercel
-```
+| Email | Contraseña | Rol |
+| --- | --- | --- |
+| admin@esinsa.com | admin123 | Administrador |
+| gerente@esinsa.com | gerente123 | Gerente |
+| supervisor@esinsa.com | super123 | Supervisor |
+| operario1@esinsa.com | opera123 | Operario |
+| picker1@esinsa.com | picker123 | Picker |
+| viewer@esinsa.com | viewer123 | Visor |
 
 ## Contribuir
 

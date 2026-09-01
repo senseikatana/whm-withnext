@@ -2,13 +2,14 @@
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
 import type { AuthContextType, AuthUser } from "../interfaces";
-import { getCurrentUser, signIn, signOut, signUp } from "./auth";
+import { getCurrentUser, signIn, signInWithOAuth, signOut, signUp } from "./auth";
 
 const AuthContext = createContext<AuthContextType>({
 	user: null,
 	loading: false,
 	login: async () => ({ error: null }),
 	register: async () => ({ error: null }),
+	loginWithOAuth: async () => ({ error: null }),
 	logout: async () => {},
 });
 
@@ -49,6 +50,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		}
 	};
 
+	const loginWithOAuth = async (provider: "google" | "github") => {
+		try {
+			return await signInWithOAuth(provider);
+		} catch {
+			return { error: "Error de conexión" };
+		}
+	};
+
 	const logout = async () => {
 		try {
 			await signOut();
@@ -58,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, loading, login, register, logout }}>
+		<AuthContext.Provider value={{ user, loading, login, register, loginWithOAuth, logout }}>
 			{children}
 		</AuthContext.Provider>
 	);

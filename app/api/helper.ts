@@ -39,7 +39,8 @@ export async function handlePost(table: string, request: Request) {
 
 		// Auto-generate slug if not provided
 		if (!body.slug) {
-			const slugSource = body.sku || body.code || body.order_number || body.task_number || body.name || "item";
+			const slugSource =
+				body.sku || body.code || body.order_number || body.task_number || body.name || "item";
 			body.slug = generateSlug(slugSource);
 		}
 

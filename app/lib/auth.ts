@@ -17,10 +17,7 @@ export async function signUp(email: string, password: string, name?: string): Pr
 		if (error) return { user: null, error: error.message };
 
 		if (data?.requireEmailVerification) {
-			return {
-				user: null,
-				error: null,
-			};
+			return { user: null, error: null };
 		}
 
 		if (data?.user) {
@@ -68,6 +65,27 @@ export async function signIn(email: string, password: string): Promise<AuthResul
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Error during sign in";
 		return { user: null, error: message };
+	}
+}
+
+/**
+ * Sign in with OAuth provider (Google, GitHub).
+ */
+export async function signInWithOAuth(
+	provider: "google" | "github",
+): Promise<{ error: string | null }> {
+	try {
+		const redirectTo = typeof window !== "undefined" ? window.location.origin : "";
+		const { error } = await insforge.auth.signInWithOAuth({
+			provider,
+			redirectTo,
+		});
+
+		if (error) return { error: error.message };
+		return { error: null };
+	} catch (err: unknown) {
+		const message = err instanceof Error ? err.message : `Error signing in with ${provider}`;
+		return { error: message };
 	}
 }
 

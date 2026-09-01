@@ -151,3 +151,11 @@ export async function GET(request: Request) {
   // ... lógica del endpoint
 }
 ```
+| Email | Contraseña | Rol |
+| --- | --- | --- |
+| admin@esinsa.com | admin123 | Administrador |
+| gerente@esinsa.com | gerente123 | Gerente |
+| supervisor@esinsa.com | super123 | Supervisor |
+| operario1@esinsa.com | opera123 | Operario |
+| picker1@esinsa.com | picker123 | Picker |
+| viewer@esinsa.com | viewer123 | Visor |

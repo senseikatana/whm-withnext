@@ -15,5 +15,6 @@ export interface AuthContextType {
 	loading: boolean;
 	login: (email: string, password: string) => Promise<{ error: string | null }>;
 	register: (email: string, password: string, name?: string) => Promise<{ error: string | null }>;
+	loginWithOAuth: (provider: "google" | "github") => Promise<{ error: string | null }>;
 	logout: () => Promise<void>;
 }

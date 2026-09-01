@@ -17,15 +17,18 @@ import {
 	Users,
 	X,
 } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CrudView from "./components/CrudView";
 import DesktopDashboardView from "./components/DesktopDashboardView";
+import LoginPage from "./components/LoginPage";
 import RoutesView from "./components/RoutesView";
 import SapIntegrationView from "./components/SapIntegrationView";
 // Import modular components
 import SidebarItem from "./components/SidebarItem";
 import VoicePickingView from "./components/VoicePickingView";
 import WhatsAppAgentView from "./components/WhatsAppAgentView";
+import { useAuth } from "./lib/auth-context";
 import { withBasePath } from "./lib/base-path";
 import {
 	normalizeCustomer,
@@ -518,9 +521,24 @@ const translations = {
 };
 
 export default function App() {
+	const { user, loading: authLoading, logout } = useAuth();
 	const [lang, setLang] = useState<"es" | "en">("es");
 	const [activeTab, setActiveTab] = useState<string>("dashboard");
 	const [searchQuery, setSearchQuery] = useState<string>("");
+
+	// Show login page if not authenticated
+	if (!authLoading && !user) {
+		return <LoginPage />;
+	}
+
+	// Show loading while checking auth
+	if (authLoading) {
+		return (
+			<div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+				<div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+			</div>
+		);
+	}
 
 	// Database status flag (connected to local sqlite vs offline mockup)
 	const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
@@ -751,7 +769,9 @@ export default function App() {
 						{
 							sku: `SKU-${randomNum}`,
 							name: `Caja SKU-${randomNum} Premium`,
-							category: ["Embalaje", "Palets", "EPI", "Tecnología", "Almacenaje"][Math.floor(Math.random() * 5)],
+							category: ["Embalaje", "Palets", "EPI", "Tecnología", "Almacenaje"][
+								Math.floor(Math.random() * 5)
+							],
 							stock: Math.floor(Math.random() * 500),
 							minStock: 20,
 							location: `B-0${Math.floor(1 + Math.random() * 8)}-0${Math.floor(1 + Math.random() * 5)}`,
@@ -776,7 +796,12 @@ export default function App() {
 					);
 				} else if (entity === "orders") {
 					const randomNum = Math.floor(100 + Math.random() * 899);
-					const customers = ["Mercadona S.A.", "Carrefour España", "El Corte Inglés", "Distribuciones García SL"];
+					const customers = [
+						"Mercadona S.A.",
+						"Carrefour España",
+						"El Corte Inglés",
+						"Distribuciones García SL",
+					];
 					const statuses = ["Pendiente", "Picking", "Packing", "Despachado"];
 					await handleSave(
 						"orders",
@@ -895,6 +920,21 @@ export default function App() {
 					>
 						<Globe size={18} />
 					</button>
+
+					{/* User info + Logout */}
+					<div className="flex items-center gap-2">
+						<span className="text-xs text-slate-400 hidden md:inline">
+							{user?.email}
+						</span>
+						<button
+							type="button"
+							onClick={logout}
+							className="p-2.5 bg-[#0b0f19] border border-slate-800 rounded-xl hover:text-rose-400 hover:border-rose-500/30 text-slate-400 transition"
+							title="Cerrar sesión"
+						>
+							<LogOut size={18} />
+						</button>
+					</div>
 				</div>
 			</header>
 
@@ -902,276 +942,274 @@ export default function App() {
 			<div className="flex-1 flex overflow-hidden">
 				{/* Desktop Sidebar */}
 				<aside className="w-64 bg-[#050811] border-r border-slate-800/80 p-4 shrink-0 hidden md:flex flex-col justify-between overflow-y-auto">
-							<div className="space-y-1">
-								<p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 mb-3">
-									Módulos SGA
-								</p>
-								<SidebarItem
-									icon={LayoutDashboard}
-									label={t.dashboard}
-									active={activeTab === "dashboard"}
-									onClick={() => setActiveTab("dashboard")}
-								/>
-								<SidebarItem
-									icon={Package}
-									label={t.inventory}
-									active={activeTab === "inventory"}
-									onClick={() => setActiveTab("inventory")}
-									badge={dbState.products.length}
-								/>
-								<SidebarItem
-									icon={ArrowDownToLine}
-									label={t.inOrders}
-									active={activeTab === "inbound"}
-									onClick={() => setActiveTab("inbound")}
-									badge={filteredInOrders.length}
-								/>
-								<SidebarItem
-									icon={Send}
-									label={t.outOrders}
-									active={activeTab === "outbound"}
-									onClick={() => setActiveTab("outbound")}
-									badge={filteredOutOrders.length}
-								/>
-								<SidebarItem
-									icon={Mic}
-									label={t.picking}
-									active={activeTab === "picking"}
-									onClick={() => setActiveTab("picking")}
-								/>
+					<div className="space-y-1">
+						<p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 mb-3">
+							Módulos SGA
+						</p>
+						<SidebarItem
+							icon={LayoutDashboard}
+							label={t.dashboard}
+							active={activeTab === "dashboard"}
+							onClick={() => setActiveTab("dashboard")}
+						/>
+						<SidebarItem
+							icon={Package}
+							label={t.inventory}
+							active={activeTab === "inventory"}
+							onClick={() => setActiveTab("inventory")}
+							badge={dbState.products.length}
+						/>
+						<SidebarItem
+							icon={ArrowDownToLine}
+							label={t.inOrders}
+							active={activeTab === "inbound"}
+							onClick={() => setActiveTab("inbound")}
+							badge={filteredInOrders.length}
+						/>
+						<SidebarItem
+							icon={Send}
+							label={t.outOrders}
+							active={activeTab === "outbound"}
+							onClick={() => setActiveTab("outbound")}
+							badge={filteredOutOrders.length}
+						/>
+						<SidebarItem
+							icon={Mic}
+							label={t.picking}
+							active={activeTab === "picking"}
+							onClick={() => setActiveTab("picking")}
+						/>
 
-								<p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 mt-6 mb-3">
-									Inteligencia
-								</p>
-								<SidebarItem
-									icon={Route}
-									label={t.routes}
-									active={activeTab === "routes"}
-									onClick={() => setActiveTab("routes")}
-								/>
-								<SidebarItem
-									icon={MessageCircle}
-									label={t.whatsapp}
-									active={activeTab === "whatsapp"}
-									onClick={() => setActiveTab("whatsapp")}
-								/>
+						<p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 mt-6 mb-3">
+							Inteligencia
+						</p>
+						<SidebarItem
+							icon={Route}
+							label={t.routes}
+							active={activeTab === "routes"}
+							onClick={() => setActiveTab("routes")}
+						/>
+						<SidebarItem
+							icon={MessageCircle}
+							label={t.whatsapp}
+							active={activeTab === "whatsapp"}
+							onClick={() => setActiveTab("whatsapp")}
+						/>
 
-								<p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 mt-6 mb-3">
-									Configuración
-								</p>
-								<SidebarItem
-									icon={Users}
-									label={t.users}
-									active={activeTab === "users"}
-									onClick={() => setActiveTab("users")}
-								/>
-								<SidebarItem
-									icon={Cpu}
-									label={t.sap}
-									active={activeTab === "sap"}
-									onClick={() => setActiveTab("sap")}
-								/>
-							</div>
+						<p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 mt-6 mb-3">
+							Configuración
+						</p>
+						<SidebarItem
+							icon={Users}
+							label={t.users}
+							active={activeTab === "users"}
+							onClick={() => setActiveTab("users")}
+						/>
+						<SidebarItem
+							icon={Cpu}
+							label={t.sap}
+							active={activeTab === "sap"}
+							onClick={() => setActiveTab("sap")}
+						/>
+					</div>
 
-							<div className="p-4 bg-slate-900/20 rounded-2xl border border-slate-800 text-[10px] text-slate-500 font-semibold uppercase text-center tracking-wide">
-								{t.copyright}
-							</div>
-						</aside>
+					<div className="p-4 bg-slate-900/20 rounded-2xl border border-slate-800 text-[10px] text-slate-500 font-semibold uppercase text-center tracking-wide">
+						{t.copyright}
+					</div>
+				</aside>
 
-						{/* Mobile Bottom Navigation */}
-						<nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#050811] border-t border-slate-800 h-16 flex justify-around items-center px-2 z-30">
-							<button
-								type="button"
-								onClick={() => setActiveTab("dashboard")}
-								className={`flex flex-col items-center p-2 ${activeTab === "dashboard" ? "text-indigo-400" : "text-slate-500"}`}
-							>
-								<LayoutDashboard size={20} />
-								<span className="text-[9px] mt-0.5">{t.dashboard}</span>
-							</button>
-							<button
-								type="button"
-								onClick={() => setActiveTab("inventory")}
-								className={`flex flex-col items-center p-2 relative ${activeTab === "inventory" ? "text-indigo-400" : "text-slate-500"}`}
-							>
-								<Package size={20} />
-								<span className="text-[9px] mt-0.5">{t.inventory}</span>
-							</button>
-							<button
-								type="button"
-								onClick={() => setActiveTab("picking")}
-								className={`flex flex-col items-center p-2 ${activeTab === "picking" ? "text-indigo-400" : "text-slate-500"}`}
-							>
-								<Mic size={20} />
-								<span className="text-[9px] mt-0.5">{t.picking}</span>
-							</button>
-							<button
-								type="button"
-								onClick={() => setActiveTab("whatsapp")}
-								className={`flex flex-col items-center p-2 ${activeTab === "whatsapp" ? "text-indigo-400" : "text-slate-500"}`}
-							>
-								<MessageCircle size={20} />
-								<span className="text-[9px] mt-0.5">WhatsApp</span>
-							</button>
-						</nav>
+				{/* Mobile Bottom Navigation */}
+				<nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#050811] border-t border-slate-800 h-16 flex justify-around items-center px-2 z-30">
+					<button
+						type="button"
+						onClick={() => setActiveTab("dashboard")}
+						className={`flex flex-col items-center p-2 ${activeTab === "dashboard" ? "text-indigo-400" : "text-slate-500"}`}
+					>
+						<LayoutDashboard size={20} />
+						<span className="text-[9px] mt-0.5">{t.dashboard}</span>
+					</button>
+					<button
+						type="button"
+						onClick={() => setActiveTab("inventory")}
+						className={`flex flex-col items-center p-2 relative ${activeTab === "inventory" ? "text-indigo-400" : "text-slate-500"}`}
+					>
+						<Package size={20} />
+						<span className="text-[9px] mt-0.5">{t.inventory}</span>
+					</button>
+					<button
+						type="button"
+						onClick={() => setActiveTab("picking")}
+						className={`flex flex-col items-center p-2 ${activeTab === "picking" ? "text-indigo-400" : "text-slate-500"}`}
+					>
+						<Mic size={20} />
+						<span className="text-[9px] mt-0.5">{t.picking}</span>
+					</button>
+					<button
+						type="button"
+						onClick={() => setActiveTab("whatsapp")}
+						className={`flex flex-col items-center p-2 ${activeTab === "whatsapp" ? "text-indigo-400" : "text-slate-500"}`}
+					>
+						<MessageCircle size={20} />
+						<span className="text-[9px] mt-0.5">WhatsApp</span>
+					</button>
+				</nav>
 
-						{/* Main Content Area */}
-						<main className="flex-1 bg-[#0b0f19] overflow-y-auto p-6 md:p-8 pb-24 md:pb-8">
-							{loading && (
-								<div className="fixed inset-0 bg-[#050811]/45 backdrop-blur-xs flex items-center justify-center z-50">
-									<Loader2 className="animate-spin text-indigo-500" size={40} />
-								</div>
-							)}
+				{/* Main Content Area */}
+				<main className="flex-1 bg-[#0b0f19] overflow-y-auto p-6 md:p-8 pb-24 md:pb-8">
+					{loading && (
+						<div className="fixed inset-0 bg-[#050811]/45 backdrop-blur-xs flex items-center justify-center z-50">
+							<Loader2 className="animate-spin text-indigo-500" size={40} />
+						</div>
+					)}
 
-							{activeTab === "dashboard" && (
-								<DesktopDashboardView
-									dbState={dbState}
-									filteredIn={filteredInOrders}
-									filteredOut={filteredOutOrders}
-									t={t}
-								/>
-							)}
-							{activeTab === "inventory" && (
-								<CrudView
-									entityKey="products"
-									title="Inventario de Productos"
-									data={searchQuery ? searchFilteredProducts : dbState.products}
-									fields={[
-										{ key: "sku", label: "SKU", type: "text" },
-										{ key: "name", label: "Nombre", type: "text" },
-										{
-											key: "category",
-											label: "Categoría",
-											type: "select",
-											options: [
-												"Palets",
-												"Embalaje",
-												"Etiquetado",
-												"Equipamiento",
-												"Almacenaje",
-												"EPI",
-												"Tecnología",
-												"Herramientas",
-											],
-										},
-										{ key: "stock", label: "Stock Actual", type: "number" },
-										{ key: "minStock", label: "Stock Mínimo", type: "number" },
-										{
-											key: "location",
-											label: "Ubicación (Pasillo-Rack-Nivel)",
-											type: "text",
-										},
-										{ key: "price", label: "Precio (€)", type: "number" },
-									]}
-									onSave={(d: any, id: any) => handleSave("products", d, id)}
-									onDelete={(id: any) => handleDelete("products", id)}
-									onBatchDelete={(ids: number[]) => handleBatchDelete("products", ids)}
-									onInject={(qty) => handleInjectMock("products", qty)}
-									t={t}
-								/>
-							)}
-							{activeTab === "inbound" && (
-								<CrudView
-									entityKey="orders"
-									title="Recepciones - Entrada de Mercancía"
-									data={filteredInOrders}
-									fields={[
-										{
-											key: "orderNumber",
-											label: "Nº Orden de Entrada",
-											type: "text",
-										},
-										{ key: "customerName", label: "Proveedor", type: "text" },
-										{
-											key: "status",
-											label: "Estado",
-											type: "select",
-											options: ["Pendiente", "Control de Calidad", "Completado"],
-										},
-										{
-											key: "totalItems",
-											label: "Bultos Totales",
-											type: "number",
-										},
-										{ key: "totalValue", label: "Valor (€)", type: "number" },
-									]}
-									onSave={(d: any, id: any) => handleSave("orders", d, id)}
-									onDelete={(id: any) => handleDelete("orders", id)}
-									onBatchDelete={(ids: number[]) => handleBatchDelete("orders", ids)}
-									onInject={(qty) => handleInjectMock("orders", qty)}
-									t={t}
-								/>
-							)}
-							{activeTab === "outbound" && (
-								<CrudView
-									entityKey="orders"
-									title="Expediciones - Envío de Pedidos"
-									data={filteredOutOrders}
-									fields={[
-										{
-											key: "orderNumber",
-											label: "Nº Pedido Cliente",
-											type: "text",
-										},
-										{ key: "customerName", label: "Cliente", type: "text" },
-										{
-											key: "status",
-											label: "Estado",
-											type: "select",
-											options: ["Pendiente", "Picking", "Packing", "Despachado", "Completado"],
-										},
-										{
-											key: "totalItems",
-											label: "Total Bultos",
-											type: "number",
-										},
-										{ key: "totalValue", label: "Valor (€)", type: "number" },
-									]}
-									onSave={(d: any, id: any) => handleSave("orders", d, id)}
-									onDelete={(id: any) => handleDelete("orders", id)}
-									onBatchDelete={(ids: number[]) => handleBatchDelete("orders", ids)}
-									onInject={(qty) => handleInjectMock("orders", qty)}
-									t={t}
-								/>
-							)}
-							{activeTab === "picking" && (
-								<VoicePickingView pickingTasks={dbState.picking} products={dbState.products} />
-							)}
-							{activeTab === "routes" && <RoutesView />}
-							{activeTab === "whatsapp" && (
-								<WhatsAppAgentView chats={dbState.whatsapp} setDbState={setDbState} />
-							)}
-							{activeTab === "users" && (
-								<CrudView
-									entityKey="staff"
-									title="Personal & Turnos de Almacén"
-									data={dbState.staff}
-									fields={[
-										{ key: "name", label: "Nombre Operario", type: "text" },
-										{
-											key: "role",
-											label: "Rol",
-											type: "select",
-											options: ["Administrador", "Operario", "Supervisor"],
-										},
-										{ key: "zone", label: "Zona Asignada", type: "text" },
-										{
-											key: "status",
-											label: "Estado Operativo",
-											type: "select",
-											options: ["Activo", "Inactivo", "En Ruta"],
-										},
-									]}
-									onSave={(d: any, id: any) => handleSave("staff", d, id)}
-									onDelete={(id: any) => handleDelete("staff", id)}
-									onBatchDelete={(ids: number[]) => handleBatchDelete("staff", ids)}
-									onInject={(qty) => handleInjectMock("staff", qty)}
-									t={t}
-								/>
-							)}
-							{activeTab === "sap" && (
-								<SapIntegrationView logs={dbState.sapLogs} setDbState={setDbState} />
-							)}
-					</main>
+					{activeTab === "dashboard" && (
+						<DesktopDashboardView
+							dbState={dbState}
+							filteredIn={filteredInOrders}
+							filteredOut={filteredOutOrders}
+							t={t}
+						/>
+					)}
+					{activeTab === "inventory" && (
+						<CrudView
+							entityKey="products"
+							title="Inventario de Productos"
+							data={searchQuery ? searchFilteredProducts : dbState.products}
+							fields={[
+								{ key: "sku", label: "SKU", type: "text" },
+								{ key: "name", label: "Nombre", type: "text" },
+								{
+									key: "category",
+									label: "Categoría",
+									type: "select",
+									options: [
+										"Palets",
+										"Embalaje",
+										"Etiquetado",
+										"Equipamiento",
+										"Almacenaje",
+										"EPI",
+										"Tecnología",
+										"Herramientas",
+									],
+								},
+								{ key: "stock", label: "Stock Actual", type: "number" },
+								{ key: "minStock", label: "Stock Mínimo", type: "number" },
+								{
+									key: "location",
+									label: "Ubicación (Pasillo-Rack-Nivel)",
+									type: "text",
+								},
+								{ key: "price", label: "Precio (€)", type: "number" },
+							]}
+							onSave={(d: any, id: any) => handleSave("products", d, id)}
+							onDelete={(id: any) => handleDelete("products", id)}
+							onBatchDelete={(ids: number[]) => handleBatchDelete("products", ids)}
+							onInject={(qty) => handleInjectMock("products", qty)}
+							t={t}
+						/>
+					)}
+					{activeTab === "inbound" && (
+						<CrudView
+							entityKey="orders"
+							title="Recepciones - Entrada de Mercancía"
+							data={filteredInOrders}
+							fields={[
+								{
+									key: "orderNumber",
+									label: "Nº Orden de Entrada",
+									type: "text",
+								},
+								{ key: "customerName", label: "Proveedor", type: "text" },
+								{
+									key: "status",
+									label: "Estado",
+									type: "select",
+									options: ["Pendiente", "Control de Calidad", "Completado"],
+								},
+								{
+									key: "totalItems",
+									label: "Bultos Totales",
+									type: "number",
+								},
+								{ key: "totalValue", label: "Valor (€)", type: "number" },
+							]}
+							onSave={(d: any, id: any) => handleSave("orders", d, id)}
+							onDelete={(id: any) => handleDelete("orders", id)}
+							onBatchDelete={(ids: number[]) => handleBatchDelete("orders", ids)}
+							onInject={(qty) => handleInjectMock("orders", qty)}
+							t={t}
+						/>
+					)}
+					{activeTab === "outbound" && (
+						<CrudView
+							entityKey="orders"
+							title="Expediciones - Envío de Pedidos"
+							data={filteredOutOrders}
+							fields={[
+								{
+									key: "orderNumber",
+									label: "Nº Pedido Cliente",
+									type: "text",
+								},
+								{ key: "customerName", label: "Cliente", type: "text" },
+								{
+									key: "status",
+									label: "Estado",
+									type: "select",
+									options: ["Pendiente", "Picking", "Packing", "Despachado", "Completado"],
+								},
+								{
+									key: "totalItems",
+									label: "Total Bultos",
+									type: "number",
+								},
+								{ key: "totalValue", label: "Valor (€)", type: "number" },
+							]}
+							onSave={(d: any, id: any) => handleSave("orders", d, id)}
+							onDelete={(id: any) => handleDelete("orders", id)}
+							onBatchDelete={(ids: number[]) => handleBatchDelete("orders", ids)}
+							onInject={(qty) => handleInjectMock("orders", qty)}
+							t={t}
+						/>
+					)}
+					{activeTab === "picking" && (
+						<VoicePickingView pickingTasks={dbState.picking} products={dbState.products} />
+					)}
+					{activeTab === "routes" && <RoutesView />}
+					{activeTab === "whatsapp" && (
+						<WhatsAppAgentView chats={dbState.whatsapp} setDbState={setDbState} />
+					)}
+					{activeTab === "users" && (
+						<CrudView
+							entityKey="staff"
+							title="Personal & Turnos de Almacén"
+							data={dbState.staff}
+							fields={[
+								{ key: "name", label: "Nombre Operario", type: "text" },
+								{
+									key: "role",
+									label: "Rol",
+									type: "select",
+									options: ["Administrador", "Operario", "Supervisor"],
+								},
+								{ key: "zone", label: "Zona Asignada", type: "text" },
+								{
+									key: "status",
+									label: "Estado Operativo",
+									type: "select",
+									options: ["Activo", "Inactivo", "En Ruta"],
+								},
+							]}
+							onSave={(d: any, id: any) => handleSave("staff", d, id)}
+							onDelete={(id: any) => handleDelete("staff", id)}
+							onBatchDelete={(ids: number[]) => handleBatchDelete("staff", ids)}
+							onInject={(qty) => handleInjectMock("staff", qty)}
+							t={t}
+						/>
+					)}
+					{activeTab === "sap" && <SapIntegrationView logs={dbState.sapLogs} setDbState={setDbState} />}
+				</main>
 			</div>
 
 			{/* AI API Key Modal */}
