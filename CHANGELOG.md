@@ -5,6 +5,29 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adherido a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] — 2026-09-01
+
+### Añadido
+
+- Dynamic basePath: un solo build sirve en subpath y raíz
+- DeepSeek AI: migrado de Gemini, integrado en CRUD y copilot
+- Realtime: 5 canales con triggers en InsForge
+- Interfaces centralizadas en `app/interfaces/`
+- Asistencia IA en modales CRUD (auto-completar)
+- Normalización snake_case → camelCase para datos del backend
+
+### Eliminado
+
+- Vista móvil (MobileAppSimulator) del header y render
+- Gemini API — reemplazado por DeepSeek
+
+### Corregido
+
+- `.env.local` con valores reales de InsForge
+- `loadData` causaba bucle infinito (useCallback fix)
+- Flasheo en carga inicial
+- Scripts de package.json corregidos
+
 ## [0.4.0] — 2026-09-01
 
 ### Añadido

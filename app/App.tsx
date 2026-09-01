@@ -14,14 +14,12 @@ import {
 	Route,
 	Search,
 	Send,
-	Smartphone,
 	Users,
 	X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import CrudView from "./components/CrudView";
 import DesktopDashboardView from "./components/DesktopDashboardView";
-import MobileAppSimulator from "./components/MobileAppSimulator";
 import RoutesView from "./components/RoutesView";
 import SapIntegrationView from "./components/SapIntegrationView";
 // Import modular components
@@ -520,7 +518,6 @@ const translations = {
 };
 
 export default function App() {
-	const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop");
 	const [lang, setLang] = useState<"es" | "en">("es");
 	const [activeTab, setActiveTab] = useState<string>("dashboard");
 	const [searchQuery, setSearchQuery] = useState<string>("");
@@ -555,7 +552,7 @@ export default function App() {
 	}, []);
 
 	// API fetches with fallback logic
-	const loadData = async () => {
+	const loadData = useCallback(async () => {
 		setLoading(true);
 		try {
 			const endpoints = [
@@ -569,12 +566,7 @@ export default function App() {
 				endpoints.map(async ({ url }) => {
 					const res = await fetch(url);
 					if (!res.ok) throw new Error(`${res.status}`);
-					const text = await res.text();
-					try {
-						return JSON.parse(text);
-					} catch {
-						throw new Error("Not JSON");
-					}
+					return res.json();
 				}),
 			);
 
@@ -597,8 +589,9 @@ export default function App() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, []);
 
+	// Load data once on mount
 	useEffect(() => {
 		loadData();
 	}, [loadData]);
@@ -726,69 +719,93 @@ export default function App() {
 	};
 
 	// AI Lote mock generator
-	const handleInjectMock = async (entity: string) => {
+	const handleInjectMock = async (entity: string, quantity: number = 1) => {
 		setLoading(true);
 		try {
-			const prompt = `Genera un objeto JSON válido para un registro de la tabla "${entity}". 
+			const prompt = `Genera un array JSON de ${quantity} objetos para la tabla "${entity}".
       Invéntate datos realistas de logística B2B. Claves obligatorias:
       ${entity === "products" ? "sku, name, category, stock, minStock, location, price" : ""}
       ${entity === "customers" ? "code, name, type (Cliente o Proveedor), email, phone, status (Activo)" : ""}
       ${entity === "orders" ? "orderNumber (ej. PED-2026-999), customerName, status (Pendiente), totalItems, totalValue" : ""}
-      Devuelve ÚNICAMENTE el JSON sin formatear con markdown ni bloques de código.`;
+      ${entity === "staff" ? "name, role (Operario/Supervisor/Administrador), zone, status (Activo)" : ""}
+      Devuelve ÚNICAMENTE el array JSON sin formatear con markdown ni bloques de código.`;
 
 			const res = await callGeminiAPI(prompt, "Eres un generador de datos JSON válidos de WMS.");
 			const cleanedJson = res
 				.replace(/```json/g, "")
 				.replace(/```/g, "")
 				.trim();
-			const generatedObj = JSON.parse(cleanedJson);
+			const parsed = JSON.parse(cleanedJson);
+			const items = Array.isArray(parsed) ? parsed : [parsed];
 
-			await handleSave(entity, generatedObj, null);
+			for (const item of items.slice(0, quantity)) {
+				await handleSave(entity, item, null);
+			}
 		} catch (_e) {
 			// Manual mock data injection if no AI or parsing error
-			if (entity === "products") {
-				const randomNum = Math.floor(100 + Math.random() * 900);
-				await handleSave(
-					"products",
-					{
-						sku: `SKU-${randomNum}`,
-						name: `Caja SKU-${randomNum} Premium`,
-						category: "Embalaje",
-						stock: Math.floor(Math.random() * 500),
-						minStock: 20,
-						location: `B-0${Math.floor(1 + Math.random() * 8)}-0${Math.floor(1 + Math.random() * 5)}`,
-						price: parseFloat((Math.random() * 30).toFixed(2)),
-					},
-					null,
-				);
-			} else if (entity === "customers") {
-				const randomNum = Math.floor(10 + Math.random() * 89);
-				await handleSave(
-					"customers",
-					{
-						code: `CUST0${randomNum}`,
-						name: `Supermercados Alcampo S.A. ${randomNum}`,
-						type: "Cliente",
-						email: `logistica@alcampo${randomNum}.es`,
-						phone: "+34 900 777 888",
-						status: "Activo",
-					},
-					null,
-				);
-			} else if (entity === "orders") {
-				const randomNum = Math.floor(100 + Math.random() * 899);
-				await handleSave(
-					"orders",
-					{
-						orderNumber: `PED-2026-${randomNum}`,
-						customerName: "Carrefour España",
-						status: "Pendiente",
-						priority: "normal",
-						totalItems: Math.floor(1 + Math.random() * 15),
-						totalValue: parseFloat((Math.random() * 4000).toFixed(2)),
-					},
-					null,
-				);
+			for (let i = 0; i < quantity; i++) {
+				if (entity === "products") {
+					const randomNum = Math.floor(100 + Math.random() * 900);
+					await handleSave(
+						"products",
+						{
+							sku: `SKU-${randomNum}`,
+							name: `Caja SKU-${randomNum} Premium`,
+							category: ["Embalaje", "Palets", "EPI", "Tecnología", "Almacenaje"][Math.floor(Math.random() * 5)],
+							stock: Math.floor(Math.random() * 500),
+							minStock: 20,
+							location: `B-0${Math.floor(1 + Math.random() * 8)}-0${Math.floor(1 + Math.random() * 5)}`,
+							price: parseFloat((Math.random() * 30).toFixed(2)),
+						},
+						null,
+					);
+				} else if (entity === "customers") {
+					const randomNum = Math.floor(10 + Math.random() * 89);
+					const names = ["Alcampo", "Dia", "Lidl", "Aldi", "Eroski", "Consum"];
+					await handleSave(
+						"customers",
+						{
+							code: `CUST0${randomNum}`,
+							name: `${names[Math.floor(Math.random() * names.length)]} S.A. ${randomNum}`,
+							type: Math.random() > 0.3 ? "Cliente" : "Proveedor",
+							email: `logistica@empresa${randomNum}.es`,
+							phone: `+34 900 ${Math.floor(100 + Math.random() * 900)} ${Math.floor(100 + Math.random() * 900)}`,
+							status: "Activo",
+						},
+						null,
+					);
+				} else if (entity === "orders") {
+					const randomNum = Math.floor(100 + Math.random() * 899);
+					const customers = ["Mercadona S.A.", "Carrefour España", "El Corte Inglés", "Distribuciones García SL"];
+					const statuses = ["Pendiente", "Picking", "Packing", "Despachado"];
+					await handleSave(
+						"orders",
+						{
+							orderNumber: `PED-2026-${randomNum}`,
+							customerName: customers[Math.floor(Math.random() * customers.length)],
+							status: statuses[Math.floor(Math.random() * statuses.length)],
+							priority: Math.random() > 0.5 ? "high" : "normal",
+							totalItems: Math.floor(1 + Math.random() * 15),
+							totalValue: parseFloat((Math.random() * 5000).toFixed(2)),
+						},
+						null,
+					);
+				} else if (entity === "staff") {
+					const randomNum = Math.floor(1 + Math.random() * 99);
+					const names = ["Pedro García", "Ana López", "Luis Martínez", "Carmen Ruiz", "José Fernández"];
+					const roles = ["Operario", "Supervisor", "Operario", "Operario"];
+					const zones = ["Zona A", "Zona B", "Zona C", "Oficina"];
+					await handleSave(
+						"staff",
+						{
+							name: names[Math.floor(Math.random() * names.length)],
+							role: roles[Math.floor(Math.random() * roles.length)],
+							zone: zones[Math.floor(Math.random() * zones.length)],
+							status: "Activo",
+						},
+						null,
+					);
+				}
 			}
 		} finally {
 			setLoading(false);
@@ -869,26 +886,6 @@ export default function App() {
 						<span>{hasApiKey ? "DeepSeek Activo" : "Conectar IA"}</span>
 					</button>
 
-					{/* View selector toggle */}
-					<div className="flex bg-[#0b0f19] border border-slate-800 rounded-xl p-1 shrink-0">
-						<button
-							type="button"
-							onClick={() => setViewMode("desktop")}
-							className={`p-2 rounded-lg transition-all ${viewMode === "desktop" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-white"}`}
-							title="Escritorio WMS"
-						>
-							<LayoutDashboard size={18} />
-						</button>
-						<button
-							type="button"
-							onClick={() => setViewMode("mobile")}
-							className={`p-2 rounded-lg transition-all ${viewMode === "mobile" ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-white"}`}
-							title="Terminal PDA Móvil"
-						>
-							<Smartphone size={18} />
-						</button>
-					</div>
-
 					{/* Language selection */}
 					<button
 						type="button"
@@ -903,10 +900,8 @@ export default function App() {
 
 			{/* Main Container */}
 			<div className="flex-1 flex overflow-hidden">
-				{viewMode === "desktop" ? (
-					<>
-						{/* Desktop Sidebar */}
-						<aside className="w-64 bg-[#050811] border-r border-slate-800/80 p-4 shrink-0 hidden md:flex flex-col justify-between overflow-y-auto">
+				{/* Desktop Sidebar */}
+				<aside className="w-64 bg-[#050811] border-r border-slate-800/80 p-4 shrink-0 hidden md:flex flex-col justify-between overflow-y-auto">
 							<div className="space-y-1">
 								<p className="text-[10px] font-black text-slate-500 uppercase tracking-widest px-4 mb-3">
 									Módulos SGA
@@ -1070,7 +1065,7 @@ export default function App() {
 									onSave={(d: any, id: any) => handleSave("products", d, id)}
 									onDelete={(id: any) => handleDelete("products", id)}
 									onBatchDelete={(ids: number[]) => handleBatchDelete("products", ids)}
-									onInject={() => handleInjectMock("products")}
+									onInject={(qty) => handleInjectMock("products", qty)}
 									t={t}
 								/>
 							)}
@@ -1102,7 +1097,7 @@ export default function App() {
 									onSave={(d: any, id: any) => handleSave("orders", d, id)}
 									onDelete={(id: any) => handleDelete("orders", id)}
 									onBatchDelete={(ids: number[]) => handleBatchDelete("orders", ids)}
-									onInject={() => handleInjectMock("orders")}
+									onInject={(qty) => handleInjectMock("orders", qty)}
 									t={t}
 								/>
 							)}
@@ -1134,7 +1129,7 @@ export default function App() {
 									onSave={(d: any, id: any) => handleSave("orders", d, id)}
 									onDelete={(id: any) => handleDelete("orders", id)}
 									onBatchDelete={(ids: number[]) => handleBatchDelete("orders", ids)}
-									onInject={() => handleInjectMock("orders")}
+									onInject={(qty) => handleInjectMock("orders", qty)}
 									t={t}
 								/>
 							)}
@@ -1169,40 +1164,14 @@ export default function App() {
 									onSave={(d: any, id: any) => handleSave("staff", d, id)}
 									onDelete={(id: any) => handleDelete("staff", id)}
 									onBatchDelete={(ids: number[]) => handleBatchDelete("staff", ids)}
-									onInject={() => handleInjectMock("staff")}
+									onInject={(qty) => handleInjectMock("staff", qty)}
 									t={t}
 								/>
 							)}
 							{activeTab === "sap" && (
 								<SapIntegrationView logs={dbState.sapLogs} setDbState={setDbState} />
 							)}
-						</main>
-					</>
-				) : (
-					/* Handheld PDA View Simulator */
-					<main className="flex-1 bg-[#050811] flex justify-center items-center p-4 overflow-y-auto">
-						<div className="w-full bg-[#0b0f19] rounded-[3rem]  border-[#050811] relative overflow-hidden flex flex-col shadow-2xl shadow-indigo-950/20">
-							{/* PDA Top Screen Header */}
-							<div className="bg-indigo-600 text-white px-5 pt-7 pb-4 shrink-0 flex justify-between items-center">
-								<div className="flex items-center space-x-2">
-									<Smartphone size={16} />
-									<span className="font-extrabold text-sm tracking-wider">PDA-02 Terminal</span>
-								</div>
-								<div className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse" />
-							</div>
-
-							{/* PDA Emulator body */}
-							<div className="flex-1 overflow-y-auto bg-[#0b0f19] flex flex-col">
-								<MobileAppSimulator
-									dbState={dbState}
-									setDbState={setDbState}
-									handleSave={handleSave}
-									handleDelete={handleDelete}
-								/>
-							</div>
-						</div>
 					</main>
-				)}
 			</div>
 
 			{/* AI API Key Modal */}

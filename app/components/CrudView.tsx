@@ -1,9 +1,10 @@
 "use client";
 
-import { CheckSquare, Edit, Filter, Plus, Search, Sparkles, Square, Trash2, X } from "lucide-react";
+import { Bot, CheckSquare, Edit, Filter, Loader2, Plus, Search, Sparkles, Square, Trash2, X } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
 import type { CrudViewProps } from "../interfaces";
+import { callAI } from "../utils/ai-api";
 
 const getStatusColor = (status: string) => {
 	const greenStatuses = [
@@ -49,6 +50,11 @@ export default function CrudView({
 	const [isOpen, setIsOpen] = useState(false);
 	const [formData, setFormData] = useState<any>({});
 	const [editingId, setEditingId] = useState<number | null>(null);
+	const [aiLoading, setAiLoading] = useState(false);
+
+	// Mock popup state
+	const [isMockOpen, setIsMockOpen] = useState(false);
+	const [mockQuantity, setMockQuantity] = useState(5);
 
 	// Filter state
 	const [searchQuery, setSearchQuery] = useState("");
@@ -136,6 +142,36 @@ export default function CrudView({
 		setIsOpen(false);
 	};
 
+	// AI auto-fill handler
+	const handleAIFill = async () => {
+		setAiLoading(true);
+		try {
+			const fieldsDesc = fields
+				.map((f) => {
+					if (f.type === "select") return `${f.key} (opciones: ${f.options?.join(", ")})`;
+					if (f.type === "number") return `${f.key} (número)`;
+					return `${f.key} (texto)`;
+				})
+				.join(", ");
+
+			const prompt = `Genera un registro realista para la tabla "${title}" de un almacén/logística.
+Campos: ${fieldsDesc}
+Responde SOLO con JSON válido, sin markdown, sin explicaciones.
+El JSON debe tener exactamente las claves: ${fields.map((f) => f.key).join(", ")}`;
+
+			const response = await callAI(prompt, "Eres un generador de datos JSON para sistemas de gestión de almacén.");
+			const cleaned = response.replace(/```json/g, "").replace(/```/g, "").trim();
+			const parsed = JSON.parse(cleaned);
+
+			// Merge with form data, keeping existing values
+			setFormData((prev: any) => ({ ...prev, ...parsed }));
+		} catch (err) {
+			console.error("AI fill error:", err);
+		} finally {
+			setAiLoading(false);
+		}
+	};
+
 	const hasActiveFilters = searchQuery.trim() || Object.values(activeFilters).some((v) => v);
 
 	return (
@@ -180,7 +216,7 @@ export default function CrudView({
 					</div>
 					<div className="flex items-center space-x-3">
 						<button
-							onClick={onInject}
+							onClick={() => setIsMockOpen(true)}
 							className="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
 							type="button"
 						>
@@ -397,6 +433,102 @@ export default function CrudView({
 				</table>
 			</div>
 
+			{/* Mock Quantity Popup */}
+			{isMockOpen && (
+				<div className="fixed inset-0 bg-[#050811]/85 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+					<div className="bg-[#0b0f19] border border-slate-800 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+						<div className="flex justify-between items-center mb-4">
+							<h3 className="text-base font-bold text-white flex items-center gap-2">
+								<Sparkles size={18} className="text-indigo-400" /> Generar Lote Mock
+							</h3>
+							<button
+								type="button"
+								onClick={() => setIsMockOpen(false)}
+								className="text-slate-400 hover:text-white transition"
+							>
+								<X size={18} />
+							</button>
+						</div>
+						<p className="text-xs text-slate-400 mb-4">
+							Selecciona cuántos registros quieres generar.
+						</p>
+						<div className="flex items-center gap-3 mb-6">
+							<button
+								type="button"
+								onClick={() => setMockQuantity(Math.max(1, mockQuantity - 5))}
+								className="px-3 py-2 bg-[#050811] border border-slate-800 rounded-lg text-slate-300 hover:bg-slate-800 transition text-sm font-bold"
+							>
+								-5
+							</button>
+							<button
+								type="button"
+								onClick={() => setMockQuantity(Math.max(1, mockQuantity - 1))}
+								className="px-3 py-2 bg-[#050811] border border-slate-800 rounded-lg text-slate-300 hover:bg-slate-800 transition text-sm font-bold"
+							>
+								-1
+							</button>
+							<input
+								type="number"
+								min={1}
+								max={100}
+								value={mockQuantity}
+								onChange={(e) => setMockQuantity(Math.max(1, Math.min(100, Number(e.target.value))))}
+								className="flex-1 bg-[#050811] border border-slate-800 rounded-lg p-2.5 text-center text-white text-lg font-bold outline-none focus:border-indigo-500"
+							/>
+							<button
+								type="button"
+								onClick={() => setMockQuantity(Math.min(100, mockQuantity + 1))}
+								className="px-3 py-2 bg-[#050811] border border-slate-800 rounded-lg text-slate-300 hover:bg-slate-800 transition text-sm font-bold"
+							>
+								+1
+							</button>
+							<button
+								type="button"
+								onClick={() => setMockQuantity(Math.min(100, mockQuantity + 5))}
+								className="px-3 py-2 bg-[#050811] border border-slate-800 rounded-lg text-slate-300 hover:bg-slate-800 transition text-sm font-bold"
+							>
+								+5
+							</button>
+						</div>
+						<div className="flex flex-wrap gap-2 mb-6">
+							{[5, 10, 25, 50, 100].map((qty) => (
+								<button
+									key={qty}
+									type="button"
+									onClick={() => setMockQuantity(qty)}
+									className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+										mockQuantity === qty
+											? "bg-indigo-600 text-white"
+											: "bg-[#050811] border border-slate-800 text-slate-400 hover:text-white"
+									}`}
+								>
+									{qty}
+								</button>
+							))}
+						</div>
+						<div className="flex justify-end space-x-3">
+							<button
+								type="button"
+								onClick={() => setIsMockOpen(false)}
+								className="px-4 py-2 border border-slate-800 hover:bg-slate-800 rounded-xl text-slate-400 text-xs font-bold"
+							>
+								Cancelar
+							</button>
+							<button
+								type="button"
+								onClick={() => {
+									onInject(mockQuantity);
+									setIsMockOpen(false);
+								}}
+								className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5"
+							>
+								<Sparkles size={14} /> Generar {mockQuantity} registros
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
 			{/* CRUD Modal Form */}
 			{isOpen && (
 				<div className="fixed inset-0 bg-[#050811]/85 backdrop-blur-xs flex items-center justify-center z-50 p-4">
@@ -404,7 +536,26 @@ export default function CrudView({
 						onSubmit={handleSubmit}
 						className="bg-[#0b0f19] border border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl"
 					>
-						<h3 className="text-base font-bold text-white mb-4">{editingId ? t.edit : t.add} Registro</h3>
+						<div className="flex justify-between items-center mb-4">
+							<h3 className="text-base font-bold text-white">
+								{editingId ? t.edit : t.add} Registro
+							</h3>
+							{!editingId && (
+								<button
+									type="button"
+									onClick={handleAIFill}
+									disabled={aiLoading}
+									className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 text-xs font-bold rounded-lg transition disabled:opacity-50"
+								>
+									{aiLoading ? (
+										<Loader2 size={14} className="animate-spin" />
+									) : (
+										<Bot size={14} />
+									)}
+									{aiLoading ? "Generando..." : "Auto-completar IA"}
+								</button>
+							)}
+						</div>
 						<div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
 							{fields.map((f: any) => (
 								<div key={f.key}>

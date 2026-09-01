@@ -146,23 +146,40 @@ bunx @insforge/cli db query "SELECT * FROM products"
 
 ## Despliegue
 
-### InsForge (recomendado)
+### Scripts disponibles
 
 ```bash
-# Build local
-bun build
-
-# Desplegar frontend
-bunx @insforge/cli deployments deploy .next
+bun run build          # Build de producción
+bun run db:deploy      # Desplegar frontend a InsForge
+bun run worker:deploy  # Desplegar Worker a Cloudflare
+bun run deploy         # Build + Worker en paralelo
+bun run deploy:full    # InsForge + Worker en paralelo
 ```
 
-### Vercel
+### ⚠️ Importante: NO usar domains attach
+
+El dominio `senseikatana.com` usa un Cloudflare Worker para routing (landing page en `/` + app en `/works/whm-withnext`). **NO ejecutar** estos comandos porque sobreescriben los registros DNS y rompen el Worker:
 
 ```bash
-# Instalar Vercel CLI
-bun add -g vercel
+# ❌ NO USAR - Sobreescribe DNS del Worker
+npx @insforge/cli domains attach senseikatana.com
+npx @insforge/cli domains dns sync senseikatana.com
+```
 
-# Desplegar
+### Flujo de deploy correcto
+
+```bash
+# 1. Deploy del frontend a InsForge
+bun run db:deploy
+
+# 2. Deploy del Worker a Cloudflare
+bun run worker:deploy
+```
+
+### Vercel (alternativo)
+
+```bash
+bun add -g vercel
 vercel
 ```
 

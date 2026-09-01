@@ -1,19 +1,16 @@
 /**
- * Dynamic basePath detection for subpath deployments.
- * Works at runtime — no build-time env vars needed.
- * Same build serves both:
- *   - senseikatana.com/works/whm-withnext (with subpath)
- *   - 8cc79ec9.insforge.site (without subpath)
+ * basePath utility.
+ *
+ * With subdomain deployment (whm.senseikatana.com), no prefix is needed.
+ * The app is served at root of the subdomain.
+ *
+ * If ever needed for subpath deployment, add prefixes to KNOWN_PREFIXES.
  */
 
-const KNOWN_PREFIXES = ["/works/whm-withnext"];
+const KNOWN_PREFIXES: string[] = [];
 
 let cached: string | null = null;
 
-/**
- * Returns the basePath prefix if the app is served under a subpath.
- * Returns "" if served at root.
- */
 export function getBasePath(): string {
 	if (cached !== null) return cached;
 
@@ -34,10 +31,6 @@ export function getBasePath(): string {
 	return cached;
 }
 
-/**
- * Prepends the basePath to a relative path.
- * withBasePath("/api/products") → "/works/whm-withnext/api/products"
- */
 export function withBasePath(path: string): string {
 	const base = getBasePath();
 	if (!base) return path;

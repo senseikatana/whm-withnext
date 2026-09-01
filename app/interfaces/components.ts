@@ -22,7 +22,7 @@ export interface CrudViewProps {
 	onSave: (data: any, id: number | null) => void;
 	onDelete: (id: number) => void;
 	onBatchDelete?: (ids: number[]) => void;
-	onInject: () => void;
+	onInject: (quantity: number) => void;
 	t: any;
 }
 
