@@ -1,9 +1,5 @@
+import type { GraphQLResponse } from "../../interfaces";
 import { api } from "../services/api-manager";
-
-interface GraphQLResponse<T> {
-	data?: T;
-	errors?: Array<{ message: string; locations?: Array<{ line: number; column: number }> }>;
-}
 
 /**
  * Cliente GraphQL que usa el API Manager.

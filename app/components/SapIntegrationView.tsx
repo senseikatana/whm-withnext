@@ -1,13 +1,8 @@
 "use client";
 
 import { ArrowLeftRight, CheckCircle2, Cpu, Loader2 } from "lucide-react";
-import type React from "react";
 import { useState } from "react";
-
-interface SapIntegrationViewProps {
-	logs: any[];
-	setDbState: React.Dispatch<React.SetStateAction<any>>;
-}
+import type { SapIntegrationViewProps } from "../interfaces";
 
 export default function SapIntegrationView({ logs, setDbState }: SapIntegrationViewProps) {
 	const [syncing, setSyncing] = useState(false);

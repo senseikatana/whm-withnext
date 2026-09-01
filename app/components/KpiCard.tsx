@@ -1,14 +1,5 @@
 import { TrendingDown, TrendingUp } from "lucide-react";
-import type React from "react";
-
-interface KpiCardProps {
-	title: string;
-	value: string | number;
-	subtitle: string;
-	icon: React.ComponentType<any>;
-	trend?: string;
-	trendUp?: boolean;
-}
+import type { KpiCardProps } from "../interfaces";
 
 export default function KpiCard({
 	title,

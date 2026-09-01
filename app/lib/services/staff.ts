@@ -1,4 +1,4 @@
-import type { Staff } from "../seeds/staff";
+import type { Staff } from "../../interfaces";
 import { createCrudService } from "./base";
 
 export const staffService = createCrudService<Staff>("staff");

@@ -11,14 +11,8 @@ import {
 	Users,
 } from "lucide-react";
 import { useMemo } from "react";
+import type { DesktopDashboardViewProps } from "../interfaces";
 import KpiCard from "./KpiCard";
-
-interface DesktopDashboardViewProps {
-	dbState: any;
-	filteredIn: any[];
-	filteredOut: any[];
-	t: any;
-}
 
 export default function DesktopDashboardView({
 	dbState,

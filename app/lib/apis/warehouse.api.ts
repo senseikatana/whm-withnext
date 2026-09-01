@@ -1,5 +1,16 @@
+import type {
+	Customer,
+	ItemResponse,
+	ListResponse,
+	Order,
+	PickingTask,
+	Product,
+	Staff,
+} from "../../interfaces";
 import { withBasePath } from "../base-path";
 import { api } from "../services/api-manager";
+
+export type { Customer, Order, PickingTask, Product, Staff } from "../../interfaces";
 
 /**
  * Configuración de la API del Warehouse.
@@ -40,71 +51,6 @@ export function initWarehouseApi(baseUrl: string) {
 }
 
 // ==================== Typed helpers ====================
-
-export interface Product {
-	id: number;
-	slug: string;
-	sku: string;
-	name: string;
-	category: string;
-	stock: number;
-	min_stock: number;
-	location: string;
-	price: number;
-}
-
-export interface Customer {
-	id: number;
-	slug: string;
-	code: string;
-	name: string;
-	type: string;
-	email: string;
-	phone: string;
-	status: string;
-}
-
-export interface Order {
-	id: number;
-	slug: string;
-	order_number: string;
-	customer_name: string;
-	status: string;
-	priority: string;
-	total_items: number;
-	total_value: number;
-}
-
-export interface PickingTask {
-	id: number;
-	slug: string;
-	task_number: string;
-	order_number: string;
-	assigned_to: string;
-	zone: string;
-	status: string;
-	total_items: number;
-	picked_items: number;
-}
-
-export interface Staff {
-	id: number;
-	slug: string;
-	name: string;
-	role: string;
-	zone: string;
-	status: string;
-}
-
-interface ListResponse<T> {
-	success: boolean;
-	data: { items: T[] };
-}
-
-interface ItemResponse<T> {
-	success: boolean;
-	data: T;
-}
 
 // ==================== Products ====================
 

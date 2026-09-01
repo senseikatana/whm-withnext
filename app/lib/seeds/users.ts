@@ -1,14 +1,4 @@
-export type UserRole = "admin" | "manager" | "supervisor" | "operator" | "picker" | "viewer";
-
-export interface UserProfile {
-	id: string;
-	email: string;
-	name: string;
-	role: UserRole;
-	zone: string;
-	phone: string;
-	is_active: boolean;
-}
+import type { UserProfile, UserRole } from "../../interfaces";
 
 /**
  * Usuarios de ejemplo para el SGA.

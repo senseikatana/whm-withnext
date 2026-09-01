@@ -1,31 +1,13 @@
+import type { ApiConfig, ApiResponse, ApisRegistry, RequestOptions } from "../../interfaces";
 import ApiError from "./api-error";
 
-export interface ApiEndpoint {
-	path: string;
-	defaultParams?: Record<string, string | number>;
-}
-
-export interface ApiConfig {
-	baseUrl: string;
-	endpoints: Record<string, ApiEndpoint>;
-	headers?: Record<string, string>;
-}
-
-export type ApisRegistry = Record<string, ApiConfig>;
-
-export interface RequestOptions {
-	params?: Record<string, string | number>;
-	query?: Record<string, string | number | null | undefined>;
-	body?: unknown;
-	headers?: Record<string, string>;
-}
-
-export interface ApiResponse<T> {
-	data: T;
-	status: number;
-	ok: boolean;
-	url: string;
-}
+export type {
+	ApiConfig,
+	ApiEndpoint,
+	ApiResponse,
+	ApisRegistry,
+	RequestOptions,
+} from "../../interfaces";
 
 // ==================== API Manager ====================
 

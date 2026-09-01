@@ -3,25 +3,7 @@
 import { CheckSquare, Edit, Filter, Plus, Search, Sparkles, Square, Trash2, X } from "lucide-react";
 import type React from "react";
 import { useMemo, useState } from "react";
-
-interface Field {
-	key: string;
-	label: string;
-	type: "text" | "number" | "select";
-	options?: string[];
-}
-
-interface CrudViewProps {
-	entityKey: string;
-	title: string;
-	data: any[];
-	fields: Field[];
-	onSave: (data: any, id: number | null) => void;
-	onDelete: (id: number) => void;
-	onBatchDelete?: (ids: number[]) => void;
-	onInject: () => void;
-	t: any;
-}
+import type { CrudViewProps } from "../interfaces";
 
 const getStatusColor = (status: string) => {
 	const greenStatuses = [

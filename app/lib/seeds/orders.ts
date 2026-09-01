@@ -1,16 +1,6 @@
-export interface Order {
-	id: number;
-	order_number: string;
-	customer_name: string;
-	status: string;
-	priority: string;
-	total_items: number;
-	total_value: number;
-	created_at?: string;
-	updated_at?: string;
-}
+import type { Order } from "../../interfaces";
 
-export const SEED_ORDERS: Omit<Order, "id" | "created_at" | "updated_at">[] = [
+export const SEED_ORDERS: Omit<Order, "id" | "slug" | "created_at" | "updated_at">[] = [
 	{
 		order_number: "PED-2026-001",
 		customer_name: "Mercadona S.A.",

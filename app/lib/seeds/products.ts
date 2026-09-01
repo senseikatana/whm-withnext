@@ -1,17 +1,6 @@
-export interface Product {
-	id: number;
-	sku: string;
-	name: string;
-	category: string;
-	stock: number;
-	min_stock: number;
-	location: string;
-	price: number;
-	created_at?: string;
-	updated_at?: string;
-}
+import type { Product } from "../../interfaces";
 
-export const SEED_PRODUCTS: Omit<Product, "id" | "created_at" | "updated_at">[] = [
+export const SEED_PRODUCTS: Omit<Product, "id" | "slug" | "created_at" | "updated_at">[] = [
 	{
 		sku: "SKU-001",
 		name: "Palet Europeo 120x80",

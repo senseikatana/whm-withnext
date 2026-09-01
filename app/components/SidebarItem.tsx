@@ -1,12 +1,4 @@
-import type React from "react";
-
-interface SidebarItemProps {
-	icon: React.ComponentType<any>;
-	label: string;
-	active: boolean;
-	onClick: () => void;
-	badge?: number;
-}
+import type { SidebarItemProps } from "../interfaces";
 
 export default function SidebarItem({
 	icon: Icon,

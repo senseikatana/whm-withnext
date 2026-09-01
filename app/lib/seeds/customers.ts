@@ -1,16 +1,6 @@
-export interface Customer {
-	id: number;
-	code: string;
-	name: string;
-	type: string;
-	email: string;
-	phone: string;
-	status: string;
-	created_at?: string;
-	updated_at?: string;
-}
+import type { Customer } from "../../interfaces";
 
-export const SEED_CUSTOMERS: Omit<Customer, "id" | "created_at" | "updated_at">[] = [
+export const SEED_CUSTOMERS: Omit<Customer, "id" | "slug" | "created_at" | "updated_at">[] = [
 	{
 		code: "CUST001",
 		name: "Mercadona S.A.",

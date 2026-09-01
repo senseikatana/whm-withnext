@@ -2,12 +2,8 @@
 
 import { Loader2, Lock, Mail, User, X } from "lucide-react";
 import { useState } from "react";
+import type { AuthModalProps } from "../interfaces";
 import { useAuth } from "../lib/auth-context";
-
-interface AuthModalProps {
-	isOpen: boolean;
-	onClose: () => void;
-}
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 	const { login, register } = useAuth();

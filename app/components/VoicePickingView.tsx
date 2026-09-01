@@ -2,11 +2,7 @@
 
 import { CheckSquare, Mic, Play, RadioReceiver, Square } from "lucide-react";
 import { useMemo, useState } from "react";
-
-interface VoicePickingViewProps {
-	pickingTasks: any[];
-	products: any[];
-}
+import type { VoicePickingViewProps } from "../interfaces";
 
 export default function VoicePickingView({ pickingTasks }: VoicePickingViewProps) {
 	const [activeTask, setActiveTask] = useState<any>(null);

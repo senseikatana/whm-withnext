@@ -2,19 +2,8 @@
 
 import { Download, File, Loader2, Trash2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
+import type { FileUploadProps, UploadedFile } from "../interfaces";
 import { deleteFile, downloadFile, uploadFile } from "../lib/storage";
-
-interface FileUploadProps {
-	onUpload?: (url: string, key: string) => void;
-	className?: string;
-}
-
-interface UploadedFile {
-	name: string;
-	url: string;
-	key: string;
-	size: number;
-}
 
 export default function FileUpload({ onUpload, className }: FileUploadProps) {
 	const [files, setFiles] = useState<UploadedFile[]>([]);

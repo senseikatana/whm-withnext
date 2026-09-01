@@ -1,15 +1,7 @@
+import type { AuthResult, AuthUser } from "../interfaces";
 import insforge from "./insforge";
 
-export interface AuthUser {
-	id: string;
-	email: string;
-	name?: string;
-}
-
-export interface AuthResult {
-	user: AuthUser | null;
-	error: string | null;
-}
+export type { AuthResult, AuthUser } from "../interfaces";
 
 /**
  * Sign up with email and password.

@@ -1194,11 +1194,10 @@ export default function App() {
 							{/* PDA Emulator body */}
 							<div className="flex-1 overflow-y-auto bg-[#0b0f19] flex flex-col">
 								<MobileAppSimulator
-									dbState={dbState.products[0].id ? dbState : { ...dbState, products: INITIAL_PRODUCTS }}
+									dbState={dbState}
 									setDbState={setDbState}
 									handleSave={handleSave}
 									handleDelete={handleDelete}
-									isConnected={isBackendConnected}
 								/>
 							</div>
 						</div>

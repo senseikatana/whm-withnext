@@ -1,17 +1,6 @@
-export interface PickingTask {
-	id: number;
-	task_number: string;
-	order_number: string;
-	assigned_to: string;
-	zone: string;
-	status: string;
-	total_items: number;
-	picked_items: number;
-	created_at?: string;
-	updated_at?: string;
-}
+import type { PickingTask } from "../../interfaces";
 
-export const SEED_PICKING: Omit<PickingTask, "id" | "created_at" | "updated_at">[] = [
+export const SEED_PICKING: Omit<PickingTask, "id" | "slug" | "created_at" | "updated_at">[] = [
 	{
 		task_number: "PICK-001",
 		order_number: "PED-2026-001",

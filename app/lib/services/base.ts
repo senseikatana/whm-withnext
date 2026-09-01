@@ -1,14 +1,7 @@
+import type { CrudResult, ListResult } from "../../interfaces";
 import insforge from "../insforge";
 
-export interface CrudResult<T> {
-	data: T | null;
-	error: string | null;
-}
-
-export interface ListResult<T> {
-	data: T[];
-	error: string | null;
-}
+export type { CrudResult, ListResult } from "../../interfaces";
 
 /**
  * Base CRUD service for InsForge tables.

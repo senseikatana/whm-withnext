@@ -3,13 +3,7 @@
 import { LayoutDashboard, ListChecks, Loader2, Package, QrCode } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
-
-interface MobileAppSimulatorProps {
-	dbState: any;
-	setDbState: React.Dispatch<React.SetStateAction<any>>;
-	handleSave: (entity: string, data: any, id: number | null) => void;
-	handleDelete: (entity: string, id: number) => void;
-}
+import type { MobileAppSimulatorProps } from "../interfaces";
 
 const getStatusColor = (status: string) => {
 	const greenStatuses = [

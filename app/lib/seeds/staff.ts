@@ -1,14 +1,6 @@
-export interface Staff {
-	id: number;
-	name: string;
-	role: string;
-	zone: string;
-	status: string;
-	created_at?: string;
-	updated_at?: string;
-}
+import type { Staff } from "../../interfaces";
 
-export const SEED_STAFF: Omit<Staff, "id" | "created_at" | "updated_at">[] = [
+export const SEED_STAFF: Omit<Staff, "id" | "slug" | "created_at" | "updated_at">[] = [
 	{
 		name: "Juan García",
 		role: "Administrador",

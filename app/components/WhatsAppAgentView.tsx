@@ -1,13 +1,8 @@
 "use client";
 
 import { Bot, Loader2, Send } from "lucide-react";
-import type React from "react";
 import { useState } from "react";
-
-interface WhatsAppAgentViewProps {
-	chats: any[];
-	setDbState: React.Dispatch<React.SetStateAction<any>>;
-}
+import type { WhatsAppAgentViewProps } from "../interfaces";
 
 const callAILocal = async (prompt: string) => {
 	const apiKey = typeof window !== "undefined" ? localStorage.getItem("ai_api_key") || "" : "";
@@ -101,7 +96,7 @@ export default function WhatsAppAgentView({ chats, setDbState }: WhatsAppAgentVi
 			</div>
 
 			{/* Chat Area */}
-			<div className="flex-1 bg-[#0b0f19] border border-slate-800 rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
+			<div className="flex-1 bg-[#0b0f19] border border-slate-800 rounded-xl p-5 flex flex-col justify-between">
 				{activeChat ? (
 					<>
 						{/* Header */}

@@ -1,15 +1,8 @@
 "use client";
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react";
-import { type AuthUser, getCurrentUser, signIn, signOut, signUp } from "./auth";
-
-interface AuthContextType {
-	user: AuthUser | null;
-	loading: boolean;
-	login: (email: string, password: string) => Promise<{ error: string | null }>;
-	register: (email: string, password: string, name?: string) => Promise<{ error: string | null }>;
-	logout: () => Promise<void>;
-}
+import type { AuthContextType, AuthUser } from "../interfaces";
+import { getCurrentUser, signIn, signOut, signUp } from "./auth";
 
 const AuthContext = createContext<AuthContextType>({
 	user: null,

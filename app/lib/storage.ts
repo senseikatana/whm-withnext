@@ -1,18 +1,9 @@
+import type { DownloadResult, UploadResult } from "../interfaces";
 import insforge from "./insforge";
 
+export type { DownloadResult, UploadResult } from "../interfaces";
+
 const BUCKET_NAME = "warehouse-files";
-
-export interface UploadResult {
-	url: string | null;
-	key: string | null;
-	error: string | null;
-}
-
-export interface DownloadResult {
-	blob: Blob | null;
-	url: string | null;
-	error: string | null;
-}
 
 /**
  * Upload a file to the warehouse-files bucket.
