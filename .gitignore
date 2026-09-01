@@ -59,5 +59,7 @@ next-env.d.ts
 .roo
 .trae
 .windsurf
+.devin
+.cursor
 
-RELEASES/*
+RELEASES/
